@@ -1,7 +1,7 @@
-using System.Data.Entity;
 using marketplace_api.Data;
 using marketplace_api.Dto;
 using marketplace_api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.CategoryService;
 

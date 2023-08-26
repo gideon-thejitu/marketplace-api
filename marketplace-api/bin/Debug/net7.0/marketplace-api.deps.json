@@ -9,7 +9,7 @@
       "marketplace-api/1.0.0": {
         "dependencies": {
           "EntityFramework": "6.4.4",
-          "Microsoft.AspNetCore.OpenApi": "7.0.8",
+          "Microsoft.AspNetCore.OpenApi": "7.0.9",
           "Microsoft.EntityFrameworkCore": "7.0.10",
           "Microsoft.EntityFrameworkCore.Design": "7.0.10",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.10",
@@ -80,14 +80,14 @@
           }
         }
       },
-      "Microsoft.AspNetCore.OpenApi/7.0.8": {
+      "Microsoft.AspNetCore.OpenApi/7.0.9": {
         "dependencies": {
           "Microsoft.OpenApi": "1.4.3"
         },
         "runtime": {
           "lib/net7.0/Microsoft.AspNetCore.OpenApi.dll": {
-            "assemblyVersion": "7.0.8.0",
-            "fileVersion": "7.0.823.31807"
+            "assemblyVersion": "7.0.9.0",
+            "fileVersion": "7.0.923.32110"
           }
         }
       },
@@ -786,12 +786,12 @@
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.OpenApi/7.0.8": {
+    "Microsoft.AspNetCore.OpenApi/7.0.9": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-1dv1ujP2BF/OTg/lvxXlIB7DHFZlTkIKOMUOxvIKWklyzLlHLgYZDyLol+G8xmU+02fzAluiwvPocBK7GrRs8A==",
-      "path": "microsoft.aspnetcore.openapi/7.0.8",
-      "hashPath": "microsoft.aspnetcore.openapi.7.0.8.nupkg.sha512"
+      "sha512": "sha512-5kBnHntQTJqmYV66Khdl9OJ/j2Pw8cOKj8kNQuLCpfCsPbSijp334Vaad3vaGnG9Wpgq/VbSUSRxZOoroOe8zQ==",
+      "path": "microsoft.aspnetcore.openapi/7.0.9",
+      "hashPath": "microsoft.aspnetcore.openapi.7.0.9.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
       "type": "package",

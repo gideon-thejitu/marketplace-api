@@ -14,4 +14,5 @@ public class Product
     [NotNull]
     public long CategoryId { get; set; }
     public Category Category { get; set; } = new Category();
+    public ICollection<ProductPrice> ProductPrices { get; } = new List<ProductPrice>();
 }

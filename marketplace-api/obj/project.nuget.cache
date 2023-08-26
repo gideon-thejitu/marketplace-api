@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kuwdAsUL3OqyALFMaG5+IPOUHlH9YY09iopUKjkLS6VC9pYfgrNapSYpNZvKpTNSQObDpPLF6D3s7lYxx0jB5g==",
+  "dgSpecHash": "tposBj0w8KfUlj/KACPJXy/L1GjZUyJNDGtWiPUXM6pmXk+2jI29/+oFttXkKmJxaZgUkP1S0TijofHF5ZUvpw==",
   "success": true,
   "projectFilePath": "/Users/gr1d99/Projects/marketplace-api/marketplace-api/marketplace-api.csproj",
   "expectedPackageFiles": [
@@ -8,7 +8,7 @@
     "/Users/gr1d99/.nuget/packages/azure.identity/1.6.0/azure.identity.1.6.0.nupkg.sha512",
     "/Users/gr1d99/.nuget/packages/entityframework/6.4.4/entityframework.6.4.4.nupkg.sha512",
     "/Users/gr1d99/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
-    "/Users/gr1d99/.nuget/packages/microsoft.aspnetcore.openapi/7.0.8/microsoft.aspnetcore.openapi.7.0.8.nupkg.sha512",
+    "/Users/gr1d99/.nuget/packages/microsoft.aspnetcore.openapi/7.0.9/microsoft.aspnetcore.openapi.7.0.9.nupkg.sha512",
     "/Users/gr1d99/.nuget/packages/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "/Users/gr1d99/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/gr1d99/.nuget/packages/microsoft.data.sqlclient/5.0.2/microsoft.data.sqlclient.5.0.2.nupkg.sha512",

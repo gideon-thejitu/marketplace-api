@@ -9,11 +9,11 @@ namespace marketplace_api.Controllers;
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
 {
-    public readonly ICategoryService _categorySevice;
+    public readonly ICategoryService _categoryService;
 
     public CategoriesController(ICategoryService categoryService)
     {
-        _categorySevice = categoryService;
+        _categoryService = categoryService;
     }
 
     [HttpGet("categoryId")]
@@ -22,7 +22,7 @@ public class CategoriesController : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<CategoryDto>> Show(Guid categoryId)
     {
-        var category = await _categorySevice.Show(categoryId);
+        var category = await _categoryService.Show(categoryId);
 
         if (category is null)
         {
@@ -38,7 +38,7 @@ public class CategoriesController : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<CategoryDto>> Create([FromBody] CategoryCreateDto data)
     {
-        var result = await _categorySevice.Create(data);
+        var result = await _categoryService.Create(data);
 
         return CreatedAtAction(nameof(Show), new { categoryId = result.CategoryId }, result);
     }

@@ -27,6 +27,25 @@ public class CategoryService : ICategoryService
         }).FirstOrDefaultAsync();
     }
 
+    public async Task<CategoryDto> Create(CategoryCreateDto data)
+    {
+        var result = await _dataContext.Categories.AddAsync(new Category()
+        {
+            Name = data.Name,
+            Description = data.Description ?? String.Empty
+        });
+
+        await _dataContext.SaveChangesAsync();
+
+        return new CategoryDto()
+        {
+            Id = result.Entity.Id,
+            CategoryId = result.Entity.CategoryId,
+            Name = result.Entity.Name,
+            Description = result.Entity.Description,
+        };
+    }
+
     private IQueryable<Category> CategoryQueryable()
     {
         return _dataContext.Categories;

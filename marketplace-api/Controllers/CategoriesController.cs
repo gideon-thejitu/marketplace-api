@@ -17,8 +17,8 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("categoryId")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<CategoryDto>> Show(Guid categoryId)
     {
@@ -30,5 +30,16 @@ public class CategoriesController : ControllerBase
         }
 
         return Ok(category);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    public async Task<ActionResult<CategoryDto>> Create([FromBody] CategoryCreateDto data)
+    {
+        var result = await _categorySevice.Create(data);
+
+        return CreatedAtAction(nameof(Show), new { categoryId = result.CategoryId }, result);
     }
 }

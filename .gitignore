@@ -16,11 +16,14 @@
 # Mono auto generated files
 mono_crash.*
 
+<<<<<<< HEAD
 marketplace-api/bin/*
 marketplace-api/obj/*
 tests/bin/*
 tests/obj/*
 
+=======
+>>>>>>> fc6ac5f (feat: add create category)
 # Build results
 marketplace-api/[Dd]ebug/
 marketplace-api/[Dd]ebugPublic/
@@ -480,5 +483,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> fc6ac5f (feat: add create category)
 .idea/

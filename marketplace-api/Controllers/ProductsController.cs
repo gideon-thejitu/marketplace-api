@@ -41,48 +41,6 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] ProductDto data)
     {
-        try
-        {
-            var price = new ProductPrice()
-            {
-                BasePrice = data.BasePrice,
-                StartDate = DateTime.Now
-            };
-
-            return Ok(price);
-            
-            // var productStatus = await _dataContext.ProductStatuses.Where(t => t.ProductStatusId == data.ProductStatusId)
-            //     .FirstOrDefaultAsync();
-            //
-            // var category = await _dataContext.Categories.Where(t => t.CategoryId == data.CategoryId)
-            //     .FirstOrDefaultAsync();
-            
-            // if (productStatus is not null && category is not null)
-            // {
-            //     _dataContext.ProductPrices.Add(price);
-            //     // var product = new Product()
-            //     // {
-            //     //     Name = data.Name,
-            //     //     Description = data.Description,
-            //     //     Category = category,
-            //     //     ProductStatus = productStatus,
-            //     // };
-            //     //
-            //     // await _dataContext.SaveChangesAsync();
-            //     // return CreatedAtAction(nameof(Get), new { uuid = product.ProductId }, product);   
-            // }
-            // else
-            // {
-            //     throw new ArgumentException("somethis ");
-            // }
-            // await _dataContext.SaveChangesAsync();
-
-            return Ok("oka");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        }
+        return Ok(data);
     }
 }

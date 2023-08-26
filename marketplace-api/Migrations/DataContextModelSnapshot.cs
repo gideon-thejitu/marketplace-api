@@ -59,9 +59,6 @@ namespace marketplace_api.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("CategoryId1")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -81,8 +78,6 @@ namespace marketplace_api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("ProductStatusId");
 
@@ -164,14 +159,10 @@ namespace marketplace_api.Migrations
             modelBuilder.Entity("marketplace_api.Models.Product", b =>
                 {
                     b.HasOne("marketplace_api.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("marketplace_api.Models.Category", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId1");
 
                     b.HasOne("marketplace_api.Models.ProductStatus", "ProductStatus")
                         .WithMany("Products")

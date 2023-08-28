@@ -16,6 +16,11 @@
 # Mono auto generated files
 mono_crash.*
 
+marketplace-api/bin/*
+marketplace-api/obj/*
+tests/bin/*
+tests/obj/*
+
 # Build results
 marketplace-api/[Dd]ebug/
 marketplace-api/[Dd]ebugPublic/

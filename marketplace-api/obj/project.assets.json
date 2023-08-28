@@ -89,7 +89,7 @@
           }
         }
       },
-      "Microsoft.AspNetCore.OpenApi/7.0.8": {
+      "Microsoft.AspNetCore.OpenApi/7.0.9": {
         "type": "package",
         "dependencies": {
           "Microsoft.OpenApi": "1.4.3"
@@ -1451,10 +1451,10 @@
         "logo.png"
       ]
     },
-    "Microsoft.AspNetCore.OpenApi/7.0.8": {
-      "sha512": "1dv1ujP2BF/OTg/lvxXlIB7DHFZlTkIKOMUOxvIKWklyzLlHLgYZDyLol+G8xmU+02fzAluiwvPocBK7GrRs8A==",
+    "Microsoft.AspNetCore.OpenApi/7.0.9": {
+      "sha512": "5kBnHntQTJqmYV66Khdl9OJ/j2Pw8cOKj8kNQuLCpfCsPbSijp334Vaad3vaGnG9Wpgq/VbSUSRxZOoroOe8zQ==",
       "type": "package",
-      "path": "microsoft.aspnetcore.openapi/7.0.8",
+      "path": "microsoft.aspnetcore.openapi/7.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1462,7 +1462,7 @@
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net7.0/Microsoft.AspNetCore.OpenApi.dll",
         "lib/net7.0/Microsoft.AspNetCore.OpenApi.xml",
-        "microsoft.aspnetcore.openapi.7.0.8.nupkg.sha512",
+        "microsoft.aspnetcore.openapi.7.0.9.nupkg.sha512",
         "microsoft.aspnetcore.openapi.nuspec"
       ]
     },
@@ -4282,7 +4282,7 @@
   "projectFileDependencyGroups": {
     "net7.0": [
       "EntityFramework >= 6.4.4",
-      "Microsoft.AspNetCore.OpenApi >= 7.0.8",
+      "Microsoft.AspNetCore.OpenApi >= 7.0.9",
       "Microsoft.EntityFrameworkCore >= 7.0.10",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.10",
@@ -4290,27 +4290,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\GideonKipkogeiKimuta\\.nuget\\packages\\": {}
+    "/Users/gr1d99/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\GideonKipkogeiKimuta\\Desktop\\Projects\\C#\\marketplace-api\\marketplace-api\\marketplace-api.csproj",
+      "projectUniqueName": "/Users/gr1d99/Projects/marketplace-api/marketplace-api/marketplace-api.csproj",
       "projectName": "marketplace-api",
-      "projectPath": "C:\\Users\\GideonKipkogeiKimuta\\Desktop\\Projects\\C#\\marketplace-api\\marketplace-api\\marketplace-api.csproj",
-      "packagesPath": "C:\\Users\\GideonKipkogeiKimuta\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\GideonKipkogeiKimuta\\Desktop\\Projects\\C#\\marketplace-api\\marketplace-api\\obj\\",
+      "projectPath": "/Users/gr1d99/Projects/marketplace-api/marketplace-api/marketplace-api.csproj",
+      "packagesPath": "/Users/gr1d99/.nuget/packages/",
+      "outputPath": "/Users/gr1d99/Projects/marketplace-api/marketplace-api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\GideonKipkogeiKimuta\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/gr1d99/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\sdk\\7.0.305\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
+        "/usr/local/share/dotnet/sdk/7.0.306/Sdks/Microsoft.NET.Sdk.Web/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4335,7 +4333,7 @@
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
-            "version": "[7.0.8, )"
+            "version": "[7.0.9, )"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
@@ -4375,7 +4373,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.305\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.306/RuntimeIdentifierGraph.json"
       }
     }
   }

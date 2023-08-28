@@ -84,6 +84,56 @@ namespace marketplace_api.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
+            modelBuilder.Entity("marketplace_api.Models.ProductPrice", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("BasePrice")
+                        .HasPrecision(11, 2)
+                        .HasColumnType("decimal(11,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(11, 2)
+                        .HasColumnType("decimal(11,2)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("ProductPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductPrices", (string)null);
+                });
+
             modelBuilder.Entity("marketplace_api.Models.ProductStatus", b =>
                 {
                     b.Property<long>("Id")
@@ -97,11 +147,13 @@ namespace marketplace_api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProductStatusId")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductStatus");
+                    b.ToTable("ProductStatuses", (string)null);
                 });
 
             modelBuilder.Entity("marketplace_api.Models.Product", b =>
@@ -123,9 +175,25 @@ namespace marketplace_api.Migrations
                     b.Navigation("ProductStatus");
                 });
 
+            modelBuilder.Entity("marketplace_api.Models.ProductPrice", b =>
+                {
+                    b.HasOne("marketplace_api.Models.Product", "Product")
+                        .WithMany("ProductPrices")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("marketplace_api.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("marketplace_api.Models.Product", b =>
+                {
+                    b.Navigation("ProductPrices");
                 });
 
             modelBuilder.Entity("marketplace_api.Models.ProductStatus", b =>

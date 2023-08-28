@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace marketplace_api.Data.Configurations;
 
-public class ProductStatusConfiguration : IEntityTypeConfiguration<Category>
+public class ProductStatusConfiguration : IEntityTypeConfiguration<ProductStatus>
 {
-    public void Configure(EntityTypeBuilder<Category> builder)
+    public void Configure(EntityTypeBuilder<ProductStatus> builder)
     {
         builder
-            .ToTable("Categories")
+            .ToTable("ProductStatuses")
             .HasKey(t => t.Id);
         builder
-            .Property(t => t.CategoryId)
+            .Property(t => t.ProductStatusId)
             .HasDefaultValueSql("NEWID()");
         builder
             .HasMany<Product>(t => t.Products)
-            .WithOne(t => t.Category);
+            .WithOne(t => t.ProductStatus);
     }
 }

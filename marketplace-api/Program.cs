@@ -12,7 +12,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(opts => opts.LowercaseUrls = true);
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();

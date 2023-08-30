@@ -48,6 +48,14 @@ public class ProductStatusFilterDto : CollectionFilterDto
 {
     public ProductStatusFilterDto()
     {
-        Limit = 1;
+        Limit = 100;
+    }
+}
+
+public class ProductFilterDto : CollectionFilterDto
+{
+    public ProductFilterDto()
+    {
+        Limit = 100;
     }
 }

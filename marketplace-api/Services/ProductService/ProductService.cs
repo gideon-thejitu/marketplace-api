@@ -1,6 +1,7 @@
 using marketplace_api.Data;
 using marketplace_api.Dto;
 using marketplace_api.Models;
+using marketplace_api.Services.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.ProductService;
@@ -8,10 +9,12 @@ namespace marketplace_api.Services.ProductService;
 public class ProductService : IProductService
 {
     private readonly DataContext _dataContext;
+    private readonly IPaginationService _paginationService;
 
-    public ProductService(DataContext dataContext)
+    public ProductService(DataContext dataContext, IPaginationService paginationService)
     {
         _dataContext = dataContext;
+        _paginationService = paginationService;
     }
     public async Task<ProductDto> Create(ProductCreateDto data)
     {
@@ -48,7 +51,7 @@ public class ProductService : IProductService
         return GetProductDto(product);
     }
 
-    private ProductDto GetProductDto(Product product)
+    private static ProductDto GetProductDto(Product product)
     {
         return new ProductDto()
         {
@@ -63,7 +66,7 @@ public class ProductService : IProductService
         };
     }
 
-    private ProductStatusDto BuildProductStatusDto(ProductStatus productStatus)
+    private static ProductStatusDto BuildProductStatusDto(ProductStatus productStatus)
     {
         return new ProductStatusDto()
         {
@@ -72,7 +75,25 @@ public class ProductService : IProductService
             Name = productStatus.Name,
         };
     }
-    private CategoryDto BuildProductCategoryDto(Category category)
+
+    public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
+    {
+        var queryable = ProductQueryable().AsNoTracking();
+
+        var paginated = await _paginationService
+            .Paginate(queryable, query)
+            .Include(product => product.ProductStatus)
+            .Include(product => product.Category)
+            .Select(product => GetProductDto(product)).ToListAsync();
+
+        return new PaginatedResponseDto<ProductDto>()
+        {
+            Page = query.Page,
+            Limit = query.Limit,
+            Results = paginated
+        };
+    }
+    private static CategoryDto BuildProductCategoryDto(Category category)
     {
         return new CategoryDto()
         {
@@ -80,5 +101,10 @@ public class ProductService : IProductService
             CategoryId = category.CategoryId,
             Description = category.Description
         };
+    }
+
+    private IQueryable<Product> ProductQueryable()
+    {
+        return _dataContext.Products;
     }
 }

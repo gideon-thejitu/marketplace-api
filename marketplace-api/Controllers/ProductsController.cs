@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace marketplace_api.Controllers;
 
 [Controller]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces(MediaTypeNames.Application.Json)]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
@@ -15,6 +17,15 @@ public class ProductsController : ControllerBase
     public ProductsController(DataContext dataContext, IProductService productService)
     {
         _productService = productService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<ProductDto>))]
+    public async Task<ActionResult<PaginatedResponseDto<ProductDto>>> GetAll([FromQuery] ProductFilterDto query)
+    {
+        var result = await _productService.GetAll(query);
+
+        return Ok(result);
     }
 
     [HttpGet("{uuid:guid}")]
@@ -33,7 +44,6 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ProductDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<ActionResult> Create([FromBody] ProductCreateDto data)

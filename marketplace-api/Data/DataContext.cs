@@ -11,7 +11,6 @@ public class DataContext : DbContext
     
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductStatus> ProductStatuses { get; set; }
-    public DbSet<ProductPrice> ProductPrices { get; set; }
     public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

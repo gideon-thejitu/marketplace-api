@@ -38,6 +38,8 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<ActionResult> Create([FromBody] ProductCreateDto data)
     {
-        return Ok(data);
+        var result = await _productService.Create(data);
+
+        return Ok(result);
     }
 }

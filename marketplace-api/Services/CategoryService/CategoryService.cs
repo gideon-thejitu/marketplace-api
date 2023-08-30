@@ -1,6 +1,7 @@
 using marketplace_api.Data;
 using marketplace_api.Dto;
 using marketplace_api.Models;
+using marketplace_api.Services.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.CategoryService;
@@ -8,10 +9,12 @@ namespace marketplace_api.Services.CategoryService;
 public class CategoryService : ICategoryService
 {
     private readonly DataContext _dataContext;
+    private readonly IPaginationService _paginationService; 
 
-    public CategoryService(DataContext dataContext)
+    public CategoryService(DataContext dataContext, IPaginationService paginationService)
     {
         _dataContext = dataContext;
+        _paginationService = paginationService;
     }
 
     public async Task<CategoryDto?> Show(Guid categoryId)
@@ -46,6 +49,25 @@ public class CategoryService : ICategoryService
         };
     }
 
+    public async Task<PaginatedResponseDto<CategoryDto>> GetAll(CategoryFilterDto query)
+    {
+        var queryable = CategoryQueryable().AsNoTracking();
+        var paginated = await _paginationService.Paginate(queryable, query).Select(category => new CategoryDto()
+        {
+            Id = category.Id,
+            CategoryId = category.CategoryId,
+            Name = category.Name,
+            Description = category.Description,
+        }).ToListAsync();
+        
+        return new PaginatedResponseDto<CategoryDto>()
+        {
+            Page = query.Page,
+            Limit = query.Limit,
+            Results = paginated
+        };
+    }
+    
     private IQueryable<Category> CategoryQueryable()
     {
         return _dataContext.Categories;

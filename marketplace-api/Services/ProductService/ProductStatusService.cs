@@ -1,6 +1,7 @@
 using marketplace_api.Data;
 using marketplace_api.Dto;
 using marketplace_api.Models;
+using marketplace_api.Services.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.ProductService;
@@ -8,10 +9,12 @@ namespace marketplace_api.Services.ProductService;
 public class ProductStatusService : IProductStatusService
 {
     private readonly DataContext _dataContext;
+    private readonly IPaginationService _paginationService;
 
-    public ProductStatusService(DataContext dataContext)
+    public ProductStatusService(DataContext dataContext, IPaginationService paginationService)
     {
         _dataContext = dataContext;
+        _paginationService = paginationService;
     }
 
     public async Task<ProductStatusDto> Create(ProductStatusCreateDto data)
@@ -44,9 +47,10 @@ public class ProductStatusService : IProductStatusService
 
     public async Task<PaginatedResponseDto<ProductStatusDto>> GetAll(ProductStatusFilterDto filter)
     {
-        var results = Paginate(filter);
-        var statuses = await results.Select(status => new ProductStatusDto()
-        { 
+        var queryable = QueryableProductStatusWithDefaultScopes();
+        var results = _paginationService.Paginate(queryable, filter);
+        var statuses = await results.Select(status => new ProductStatusDto() 
+        {
             Id = status.Id, 
             ProductStatusId = status.ProductStatusId, 
             Name = status.Name 
@@ -60,16 +64,6 @@ public class ProductStatusService : IProductStatusService
         };
     }
 
-    private IQueryable<ProductStatus> Paginate(ProductStatusFilterDto filter)
-    {
-        var page = filter.Page;
-        var offset = (page - 1) * filter.Limit;
-        var paginated = QueryableProductStatusWithDefaultScopes()
-            .Skip(offset)
-            .Take(filter.Limit);
-
-        return paginated;
-    }
     private IQueryable<ProductStatus> QueryableProductStatusWithDefaultScopes()
     {
         return QueryableProductStatus().AsNoTracking().OrderBy(status => status.Id);

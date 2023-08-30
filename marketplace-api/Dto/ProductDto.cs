@@ -1,18 +1,19 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace marketplace_api.Dto;
 
 public class ProductDto
 {
+    public long Id { get; set; }
     public Guid ProductId { get; set; } = Guid.Empty;
     [Required]
     public string Name { get; set; } = String.Empty;
     public string Description { get; set; } = String.Empty;
-    [Required]
-    public Guid ProductStatusId { get; set; }
-    public Guid CategoryId { get; set; }
-    public decimal BasePrice { get; set; }
+    public decimal Price { get; set; } = Decimal.Zero;
+    public decimal DiscountedPrice { get; set; } = Decimal.Zero;
+    public ProductStatusDto ProductStatus { get; set; } = new ProductStatusDto();
+    public CategoryDto Category { get; set; } = new CategoryDto();
+
 }
 
 public class ProductCreateDto
@@ -22,11 +23,12 @@ public class ProductCreateDto
     [Required]
     public string Description { get; set; } = String.Empty;
     [Required]
-    public Guid ProductStatusId { get; set; }
+    public long ProductStatusId { get; set; }
     [Required]
-    public Guid CategoryId { get; set; }
+    public long CategoryId { get; set; }
     [Required]
-    public decimal BasePrice { get; set; }
+    public decimal Price { get; set; }
+    public decimal DiscountedPrice { get; set; }
 }
 
 public class ProductStatusDto
@@ -46,6 +48,14 @@ public class ProductStatusFilterDto : CollectionFilterDto
 {
     public ProductStatusFilterDto()
     {
-        Limit = 1;
+        Limit = 100;
+    }
+}
+
+public class ProductFilterDto : CollectionFilterDto
+{
+    public ProductFilterDto()
+    {
+        Limit = 100;
     }
 }

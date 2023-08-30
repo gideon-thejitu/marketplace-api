@@ -13,5 +13,9 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .HasKey(t => t.Id);
         builder.Property(t => t.CategoryId)
             .HasDefaultValueSql("NEWID()");
+        builder.HasMany<Product>(t => t.Products)
+            .WithOne(t => t.Category)
+            .HasForeignKey(product => product.CategoryId)
+            .IsRequired();
     }
 }

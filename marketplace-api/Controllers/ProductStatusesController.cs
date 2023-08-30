@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_api.Controllers;
 
-[Route("api/product-statuses")]
 [ApiController]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces(MediaTypeNames.Application.Json)]
+[Route("api/product-statuses")]
 public class ProductStatusesController : ControllerBase
 {
     public readonly IProductStatusService _productStatusService;
@@ -19,7 +21,6 @@ public class ProductStatusesController : ControllerBase
     [HttpGet("productStatusId")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductStatusDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<ProductStatusDto>> Show(Guid productStatusId)
     {
         var status = await _productStatusService.Show(productStatusId);
@@ -34,7 +35,6 @@ public class ProductStatusesController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<ProductStatusDto>))]
-    [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<PaginatedResponseDto<ProductStatusDto>>> GetAll([FromQuery] ProductStatusFilterDto query)
     {
         var result = await _productStatusService.GetAll(query);
@@ -45,7 +45,6 @@ public class ProductStatusesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Consumes(MediaTypeNames.Application.Json)]
     public async Task<ActionResult<ProductStatusDto>> Create([FromBody] ProductStatusCreateDto data)
     {
         var result = await _productStatusService.Create(data);

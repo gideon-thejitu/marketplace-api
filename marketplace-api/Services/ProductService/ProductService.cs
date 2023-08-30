@@ -1,12 +1,110 @@
+using marketplace_api.Data;
 using marketplace_api.Dto;
+using marketplace_api.Models;
+using marketplace_api.Services.Pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.ProductService;
 
 public class ProductService : IProductService
 {
+    private readonly DataContext _dataContext;
+    private readonly IPaginationService _paginationService;
+
+    public ProductService(DataContext dataContext, IPaginationService paginationService)
+    {
+        _dataContext = dataContext;
+        _paginationService = paginationService;
+    }
     public async Task<ProductDto> Create(ProductCreateDto data)
     {
-        return null;
+        var product = new Product()
+        {
+            Name = data.Name,
+            Description = data.Description,
+            CategoryId = data.CategoryId,
+            ProductStatusId = data.ProductStatusId,
+            Price = data.Price,
+            DiscountedPrice = data.DiscountedPrice
+        };
+            
+        _dataContext.Products.Add(product);
+        await _dataContext.SaveChangesAsync();
+
+        return GetProductDto(product);
     }
-    
+
+    public async Task<ProductDto?> Show(Guid productId)
+    {
+        var product = await _dataContext
+            .Products
+            .Include(product => product.Category)
+            .Include(product => product.ProductStatus)
+            .Where(t => t.ProductId == productId)
+            .FirstOrDefaultAsync();
+
+        if (product is null)
+        {
+            return null;
+        }
+
+        return GetProductDto(product);
+    }
+
+    private static ProductDto GetProductDto(Product product)
+    {
+        return new ProductDto()
+        {
+            Id = product.Id,
+            ProductId = product.ProductId,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            DiscountedPrice = product.DiscountedPrice,
+            Category = BuildProductCategoryDto(product.Category),
+            ProductStatus = BuildProductStatusDto(product.ProductStatus)
+        };
+    }
+
+    private static ProductStatusDto BuildProductStatusDto(ProductStatus productStatus)
+    {
+        return new ProductStatusDto()
+        {
+            Id = productStatus.Id,
+            ProductStatusId = productStatus.ProductStatusId,
+            Name = productStatus.Name,
+        };
+    }
+
+    public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
+    {
+        var queryable = ProductQueryable().AsNoTracking();
+
+        var paginated = await _paginationService
+            .Paginate(queryable, query)
+            .Include(product => product.ProductStatus)
+            .Include(product => product.Category)
+            .Select(product => GetProductDto(product)).ToListAsync();
+
+        return new PaginatedResponseDto<ProductDto>()
+        {
+            Page = query.Page,
+            Limit = query.Limit,
+            Results = paginated
+        };
+    }
+    private static CategoryDto BuildProductCategoryDto(Category category)
+    {
+        return new CategoryDto()
+        {
+            Id = category.Id,
+            CategoryId = category.CategoryId,
+            Description = category.Description
+        };
+    }
+
+    private IQueryable<Product> ProductQueryable()
+    {
+        return _dataContext.Products;
+    }
 }

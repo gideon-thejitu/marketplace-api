@@ -17,3 +17,6 @@ public class CategoryCreateDto
 
     public string? Description { get; set; } = String.Empty;
 }
+
+public class CategoryFilterDto : CollectionFilterDto
+{}

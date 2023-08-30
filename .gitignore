@@ -16,11 +16,6 @@
 # Mono auto generated files
 mono_crash.*
 
-marketplace-api/bin/*
-marketplace-api/obj/*
-tests/bin/*
-tests/obj/*
-
 # Build results
 marketplace-api/[Dd]ebug/
 marketplace-api/[Dd]ebugPublic/
@@ -36,6 +31,20 @@ marketplace-api/[Bb]in/
 marketplace-api/[Oo]bj/
 marketplace-api/[Ll]og/
 marketplace-api/[Ll]ogs/
+
+tests/[Dd]ebugPublic/
+tests/[Rr]elease/
+tests/[Rr]eleases/
+tests/x64/
+tests/x86/
+tests/[Ww][Ii][Nn]32/
+tests/[Aa][Rr][Mm]/
+tests/[Aa][Rr][Mm]64/
+tests/bld/
+tests/[Bb]in/
+tests/[Oo]bj/
+tests/[Ll]og/
+tests/[Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

@@ -13,13 +13,14 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasKey(t => t.Id);
         builder.Property(t => t.ProductId)
             .HasDefaultValueSql("NEWID()");
+        builder.Property(t => t.Price).HasPrecision(11, 2);
+        builder.Property(t => t.DiscountedPrice).HasPrecision(11, 2);
         builder
             .HasOne<ProductStatus>(t => t.ProductStatus)
-            .WithMany(t => t.Products);
+        .WithMany(t => t.Products)
+        .HasForeignKey(t => t.ProductStatusId).IsRequired();
         builder.HasOne<Category>(product => product.Category)
             .WithMany(category => category.Products)
             .HasForeignKey(product => product.CategoryId);
-        builder.HasMany<ProductPrice>(product => product.ProductPrices)
-            .WithOne(productPrice => productPrice.Product);
     }
 }

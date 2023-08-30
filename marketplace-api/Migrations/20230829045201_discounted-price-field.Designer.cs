@@ -12,8 +12,8 @@ using marketplace_api.Data;
 namespace marketplace_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230826073501_add-tables")]
-    partial class addtables
+    [Migration("20230829045201_discounted-price-field")]
+    partial class discountedpricefield
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,9 +66,17 @@ namespace marketplace_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("DiscountedPrice")
+                        .HasPrecision(11, 2)
+                        .HasColumnType("decimal(11,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(11, 2)
+                        .HasColumnType("decimal(11,2)");
 
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -85,56 +93,6 @@ namespace marketplace_api.Migrations
                     b.HasIndex("ProductStatusId");
 
                     b.ToTable("Products", (string)null);
-                });
-
-            modelBuilder.Entity("marketplace_api.Models.ProductPrice", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<decimal>("BasePrice")
-                        .HasPrecision(11, 2)
-                        .HasColumnType("decimal(11,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<decimal>("DiscountAmount")
-                        .HasPrecision(11, 2)
-                        .HasColumnType("decimal(11,2)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("ProductPriceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductPrices", (string)null);
                 });
 
             modelBuilder.Entity("marketplace_api.Models.ProductStatus", b =>
@@ -178,25 +136,9 @@ namespace marketplace_api.Migrations
                     b.Navigation("ProductStatus");
                 });
 
-            modelBuilder.Entity("marketplace_api.Models.ProductPrice", b =>
-                {
-                    b.HasOne("marketplace_api.Models.Product", "Product")
-                        .WithMany("ProductPrices")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("marketplace_api.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("marketplace_api.Models.Product", b =>
-                {
-                    b.Navigation("ProductPrices");
                 });
 
             modelBuilder.Entity("marketplace_api.Models.ProductStatus", b =>

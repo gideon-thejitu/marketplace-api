@@ -1,9 +1,8 @@
+using System.Net.Mime;
 using marketplace_api.Data;
 using marketplace_api.Dto;
-using marketplace_api.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+using marketplace_api.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Controllers;
 
@@ -11,35 +10,33 @@ namespace marketplace_api.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly DataContext _dataContext;
+    private readonly IProductService _productService;
 
-    public ProductsController(DataContext dataContext)
+    public ProductsController(DataContext dataContext, IProductService productService)
     {
-        _dataContext = dataContext;
+        _productService = productService;
     }
 
     [HttpGet("{uuid:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<ActionResult<ProductDto>> Get(Guid uuid)
     {
-        var product = await _dataContext.Products.FirstOrDefaultAsync(t => t.ProductId == uuid);
+        var product = await _productService.Show(uuid);
 
         if (product is null)
         {
             return NotFound();
         }
 
-        return new ProductDto()
-        {
-            ProductId = product.ProductId,
-            CategoryId = product.Category.CategoryId,
-            ProductStatusId = product.ProductStatus.ProductStatusId,
-            Description = product.Description,
-            BasePrice = Decimal.Zero
-        };
+        return Ok(product);
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] ProductDto data)
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ProductDto))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+    public async Task<ActionResult> Create([FromBody] ProductCreateDto data)
     {
         return Ok(data);
     }

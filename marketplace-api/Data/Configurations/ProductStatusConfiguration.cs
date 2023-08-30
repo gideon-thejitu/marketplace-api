@@ -15,7 +15,9 @@ public class ProductStatusConfiguration : IEntityTypeConfiguration<ProductStatus
             .Property(t => t.ProductStatusId)
             .HasDefaultValueSql("NEWID()");
         builder
-            .HasMany<Product>(t => t.Products)
-            .WithOne(t => t.ProductStatus);
+            .HasMany(t => t.Products)
+            .WithOne(t => t.ProductStatus)
+            .HasForeignKey(t => t.ProductStatusId)
+            .IsRequired();
     }
 }

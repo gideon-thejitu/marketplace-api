@@ -4,11 +4,21 @@ using marketplace_api.Services.Pagination;
 using marketplace_api.Services.ProductService;
 using Microsoft.EntityFrameworkCore;
 
+var developmentOrigins = "_allowedOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: developmentOrigins, policy =>
+    {
+        policy.WithOrigins("http://localhost");
+    });
+});
 
 builder.Services.AddRouting(opts => opts.LowercaseUrls = true);
 builder.Services.AddDbContext<DataContext>(options =>
@@ -25,6 +35,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(developmentOrigins);
 }
 
 app.UseHttpsRedirection();

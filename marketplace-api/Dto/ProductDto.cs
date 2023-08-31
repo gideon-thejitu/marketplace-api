@@ -11,8 +11,8 @@ public class ProductDto
     public string Description { get; set; } = String.Empty;
     public decimal Price { get; set; } = Decimal.Zero;
     public decimal DiscountedPrice { get; set; } = Decimal.Zero;
-    public ProductStatusDto ProductStatus { get; set; } = new ProductStatusDto();
-    public CategoryDto Category { get; set; } = new CategoryDto();
+    public ProductStatusDto? ProductStatus { get; set; }
+    public CategoryDto? Category { get; set; }
 
 }
 
@@ -28,6 +28,7 @@ public class ProductCreateDto
     public long CategoryId { get; set; }
     [Required]
     public decimal Price { get; set; }
+    [Required]
     public decimal DiscountedPrice { get; set; }
 }
 

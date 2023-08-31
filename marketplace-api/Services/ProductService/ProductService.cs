@@ -36,11 +36,10 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> Show(Guid productId)
     {
-        var product = await _dataContext
-            .Products
+        var product = await ProductQueryable().AsNoTracking()
+            .Where(t => t.ProductId == productId)
             .Include(product => product.Category)
             .Include(product => product.ProductStatus)
-            .Where(t => t.ProductId == productId)
             .FirstOrDefaultAsync();
 
         if (product is null)
@@ -53,6 +52,7 @@ public class ProductService : IProductService
 
     private static ProductDto GetProductDto(Product product)
     {
+        
         return new ProductDto()
         {
             Id = product.Id,
@@ -61,13 +61,18 @@ public class ProductService : IProductService
             Description = product.Description,
             Price = product.Price,
             DiscountedPrice = product.DiscountedPrice,
-            Category = BuildProductCategoryDto(product.Category),
-            ProductStatus = BuildProductStatusDto(product.ProductStatus)
+            Category = BuildProductCategoryDto(product?.Category ?? null),
+            ProductStatus = BuildProductStatusDto(product?.ProductStatus ?? null)
         };
     }
 
-    private static ProductStatusDto BuildProductStatusDto(ProductStatus productStatus)
+    private static ProductStatusDto? BuildProductStatusDto(ProductStatus? productStatus)
     {
+        if (productStatus is null)
+        {
+            return null;
+        }
+
         return new ProductStatusDto()
         {
             Id = productStatus.Id,
@@ -78,8 +83,10 @@ public class ProductService : IProductService
 
     public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
     {
-        var queryable = ProductQueryable().AsNoTracking();
-
+        var queryable = ProductQueryable()
+            .AsNoTracking().
+            OrderBy(product => product.Id);
+        var total = await queryable.CountAsync();
         var paginated = await _paginationService
             .Paginate(queryable, query)
             .Include(product => product.ProductStatus)
@@ -90,11 +97,17 @@ public class ProductService : IProductService
         {
             Page = query.Page,
             Limit = query.Limit,
+            Total = total,
             Results = paginated
         };
     }
-    private static CategoryDto BuildProductCategoryDto(Category category)
+    private static CategoryDto? BuildProductCategoryDto(Category? category)
     {
+        if (category == null)
+        {
+            return null;
+        }
+
         return new CategoryDto()
         {
             Id = category.Id,

@@ -48,6 +48,7 @@ public class ProductStatusService : IProductStatusService
     public async Task<PaginatedResponseDto<ProductStatusDto>> GetAll(ProductStatusFilterDto filter)
     {
         var queryable = QueryableProductStatusWithDefaultScopes();
+        var total = await queryable.CountAsync();
         var results = _paginationService.Paginate(queryable, filter);
         var statuses = await results.Select(status => new ProductStatusDto() 
         {
@@ -60,6 +61,7 @@ public class ProductStatusService : IProductStatusService
         {
             Page = filter.Page,
             Limit = filter.Limit,
+            Total = total,
             Results = statuses
         };
     }

@@ -13,7 +13,7 @@ public class Product
     public decimal Price { get; set; }
     public decimal DiscountedPrice { get; set; }
     public long ProductStatusId { get; set; }
-    public ProductStatus ProductStatus { get; set; } = null!;
+    public ProductStatus? ProductStatus { get; set; }
     public long CategoryId { get; set; }
-    public Category Category { get; set; } = null!;
+    public Category? Category { get; set; }
 }

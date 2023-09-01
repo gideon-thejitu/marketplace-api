@@ -36,11 +36,10 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> Show(Guid productId)
     {
-        var product = await _dataContext
-            .Products
+        var product = await ProductQueryableWithDefaultScopes().AsNoTracking()
+            .Where(t => t.ProductId == productId)
             .Include(product => product.Category)
             .Include(product => product.ProductStatus)
-            .Where(t => t.ProductId == productId)
             .FirstOrDefaultAsync();
 
         if (product is null)
@@ -51,8 +50,26 @@ public class ProductService : IProductService
         return GetProductDto(product);
     }
 
+    public async Task<ProductDto?> Update(Guid productId, ProductDto data)
+    {
+        var product = await ProductQueryableWithDefaultScopes().AsNoTracking()
+            .FirstOrDefaultAsync(product => product.ProductId == productId);
+
+        if (product is null)
+        {
+            return null;
+        }
+        
+        _dataContext.Entry(ToProduct(data)).State = EntityState.Modified;
+
+        await _dataContext.SaveChangesAsync();
+
+        return GetProductDto(product);
+    }
+
     private static ProductDto GetProductDto(Product product)
     {
+        
         return new ProductDto()
         {
             Id = product.Id,
@@ -61,13 +78,20 @@ public class ProductService : IProductService
             Description = product.Description,
             Price = product.Price,
             DiscountedPrice = product.DiscountedPrice,
-            Category = BuildProductCategoryDto(product.Category),
-            ProductStatus = BuildProductStatusDto(product.ProductStatus)
+            CategoryId = product.CategoryId,
+            ProductStatusId = product.ProductStatusId,
+            Category = BuildProductCategoryDto(product?.Category ?? null),
+            ProductStatus = BuildProductStatusDto(product?.ProductStatus ?? null)
         };
     }
 
-    private static ProductStatusDto BuildProductStatusDto(ProductStatus productStatus)
+    private static ProductStatusDto? BuildProductStatusDto(ProductStatus? productStatus)
     {
+        if (productStatus is null)
+        {
+            return null;
+        }
+
         return new ProductStatusDto()
         {
             Id = productStatus.Id,
@@ -78,8 +102,9 @@ public class ProductService : IProductService
 
     public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
     {
-        var queryable = ProductQueryable().AsNoTracking();
-
+        var queryable = ProductQueryableWithDefaultScopes()
+            .AsNoTracking();
+        var total = await queryable.CountAsync();
         var paginated = await _paginationService
             .Paginate(queryable, query)
             .Include(product => product.ProductStatus)
@@ -90,17 +115,47 @@ public class ProductService : IProductService
         {
             Page = query.Page,
             Limit = query.Limit,
+            Total = total,
             Results = paginated
         };
     }
-    private static CategoryDto BuildProductCategoryDto(Category category)
+    private static CategoryDto? BuildProductCategoryDto(Category? category)
     {
+        if (category == null)
+        {
+            return null;
+        }
+
         return new CategoryDto()
         {
             Id = category.Id,
+            Name = category.Name,
             CategoryId = category.CategoryId,
             Description = category.Description
         };
+    }
+
+    private Product ToProduct(ProductDto data)
+    {
+        return new Product()
+        {
+            Id = data.Id,
+            ProductId = data.ProductId,
+            Name = data.Name,
+            Description = data.Description,
+            Price = data.Price,
+            DiscountedPrice = data.DiscountedPrice,
+            ProductStatusId = data.ProductStatusId,
+            CategoryId = data.CategoryId
+        };
+    }
+
+    private IQueryable<Product> ProductQueryableWithDefaultScopes()
+    {
+        return ProductQueryable()
+            .OrderBy(product => product.Id)
+            .Include(product => product.Category)
+            .Include(product => product.ProductStatus);
     }
 
     private IQueryable<Product> ProductQueryable()

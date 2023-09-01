@@ -36,7 +36,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> Show(Guid productId)
     {
-        var product = await ProductQueryable().AsNoTracking()
+        var product = await ProductQueryableWithDefaultScopes().AsNoTracking()
             .Where(t => t.ProductId == productId)
             .Include(product => product.Category)
             .Include(product => product.ProductStatus)
@@ -46,6 +46,23 @@ public class ProductService : IProductService
         {
             return null;
         }
+
+        return GetProductDto(product);
+    }
+
+    public async Task<ProductDto?> Update(Guid productId, ProductDto data)
+    {
+        var product = await ProductQueryableWithDefaultScopes().AsNoTracking()
+            .FirstOrDefaultAsync(product => product.ProductId == productId);
+
+        if (product is null)
+        {
+            return null;
+        }
+        
+        _dataContext.Entry(ToProduct(data)).State = EntityState.Modified;
+
+        await _dataContext.SaveChangesAsync();
 
         return GetProductDto(product);
     }
@@ -61,6 +78,8 @@ public class ProductService : IProductService
             Description = product.Description,
             Price = product.Price,
             DiscountedPrice = product.DiscountedPrice,
+            CategoryId = product.CategoryId,
+            ProductStatusId = product.ProductStatusId,
             Category = BuildProductCategoryDto(product?.Category ?? null),
             ProductStatus = BuildProductStatusDto(product?.ProductStatus ?? null)
         };
@@ -116,9 +135,27 @@ public class ProductService : IProductService
         };
     }
 
+    private Product ToProduct(ProductDto data)
+    {
+        return new Product()
+        {
+            Id = data.Id,
+            ProductId = data.ProductId,
+            Name = data.Name,
+            Description = data.Description,
+            Price = data.Price,
+            DiscountedPrice = data.DiscountedPrice,
+            ProductStatusId = data.ProductStatusId,
+            CategoryId = data.CategoryId
+        };
+    }
+
     private IQueryable<Product> ProductQueryableWithDefaultScopes()
     {
-        return ProductQueryable().OrderBy(product => product.Id);
+        return ProductQueryable()
+            .OrderBy(product => product.Id)
+            .Include(product => product.Category)
+            .Include(product => product.ProductStatus);
     }
 
     private IQueryable<Product> ProductQueryable()

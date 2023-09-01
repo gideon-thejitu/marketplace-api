@@ -115,8 +115,7 @@ public class ProductService : IProductService
 
     public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
     {
-        var queryable = ProductQueryableWithDefaultScopes(true)
-            .AsNoTracking();
+        var queryable = ProductQueryableWithDefaultScopes(true);
         var total = await queryable.CountAsync();
         var paginated = await _paginationService
             .Paginate(queryable, query)

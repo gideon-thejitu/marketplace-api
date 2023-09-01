@@ -51,7 +51,10 @@ public class CategoryService : ICategoryService
 
     public async Task<PaginatedResponseDto<CategoryDto>> GetAll(CategoryFilterDto query)
     {
-        var queryable = CategoryQueryable().AsNoTracking();
+        var queryable = CategoryQueryable()
+            .AsNoTracking()
+            .OrderBy(category => category.Id);;
+        var total = await queryable.CountAsync();
         var paginated = await _paginationService.Paginate(queryable, query).Select(category => new CategoryDto()
         {
             Id = category.Id,
@@ -64,6 +67,7 @@ public class CategoryService : ICategoryService
         {
             Page = query.Page,
             Limit = query.Limit,
+            Total = total,
             Results = paginated
         };
     }

@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using marketplace_api.Data;
 using marketplace_api.Dto;
+using marketplace_api.Models;
 using marketplace_api.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,12 +29,12 @@ public class ProductsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{uuid:guid}")]
+    [HttpGet("{productId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<ActionResult<ProductDto>> Get(Guid uuid)
+    public async Task<ActionResult<ProductDto>> Get(Guid productId)
     {
-        var product = await _productService.Show(uuid);
+        var product = await _productService.Show(productId);
 
         if (product is null)
         {
@@ -49,6 +50,21 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult> Create([FromBody] ProductCreateDto data)
     {
         var result = await _productService.Create(data);
+
+        return Ok(result);
+    }
+
+    [HttpPut("{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    public async Task<ActionResult<ProductDto>> Update([FromBody] ProductDto data, Guid productId)
+    {
+        var result = await _productService.Update(productId, data);
+
+        if (result is null)
+        {
+            return NotFound($"Product with ProductId={productId} not found");
+        }
 
         return Ok(result);
     }

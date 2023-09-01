@@ -111,6 +111,7 @@ public class ProductService : IProductService
         return new CategoryDto()
         {
             Id = category.Id,
+            Name = category.Name,
             CategoryId = category.CategoryId,
             Description = category.Description
         };

@@ -83,9 +83,8 @@ public class ProductService : IProductService
 
     public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
     {
-        var queryable = ProductQueryable()
-            .AsNoTracking().
-            OrderBy(product => product.Id);
+        var queryable = ProductQueryableWithDefaultScopes()
+            .AsNoTracking();
         var total = await queryable.CountAsync();
         var paginated = await _paginationService
             .Paginate(queryable, query)
@@ -115,6 +114,11 @@ public class ProductService : IProductService
             CategoryId = category.CategoryId,
             Description = category.Description
         };
+    }
+
+    private IQueryable<Product> ProductQueryableWithDefaultScopes()
+    {
+        return ProductQueryable().OrderBy(product => product.Id);
     }
 
     private IQueryable<Product> ProductQueryable()

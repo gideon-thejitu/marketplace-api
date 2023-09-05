@@ -3,6 +3,7 @@ using marketplace_api.Data;
 using marketplace_api.Services.CategoryService;
 using marketplace_api.Services.Pagination;
 using marketplace_api.Services.ProductService;
+using marketplace_api.Services.RegistrationsService;
 using Microsoft.EntityFrameworkCore;
 
 var developmentOrigins = "_allowedOrigins";
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 
 var app = builder.Build();
 

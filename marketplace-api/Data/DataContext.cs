@@ -12,6 +12,7 @@ public class DataContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductStatus> ProductStatuses { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<UserIdentity> UserIdentities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,5 +20,6 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ProductStatusConfiguration());
+        modelBuilder.ApplyConfiguration(new UserIdentitiesConfiguration());
     }
 }

@@ -16,4 +16,5 @@ public class Product
     public ProductStatus? ProductStatus { get; set; }
     public long CategoryId { get; set; }
     public Category? Category { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

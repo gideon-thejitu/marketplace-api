@@ -12,6 +12,7 @@ public class ProductDto
     public string Description { get; set; } = String.Empty;
     public decimal Price { get; set; } = Decimal.Zero;
     public decimal DiscountedPrice { get; set; } = Decimal.Zero;
+    public DateTime? DeletedAt { get; set; } = null;
     public long ProductStatusId { get; set; }
     public ProductStatusDto? ProductStatus { get; set; }
     public long CategoryId { get; set; }

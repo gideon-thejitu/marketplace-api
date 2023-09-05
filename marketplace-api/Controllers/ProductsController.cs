@@ -47,7 +47,7 @@ public class ProductsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ProductDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-    public async Task<ActionResult> Create([FromBody] ProductCreateDto data)
+    public async Task<ActionResult<ProductDto>> Create([FromBody] ProductCreateDto data)
     {
         var result = await _productService.Create(data);
 
@@ -67,5 +67,22 @@ public class ProductsController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [HttpDelete("{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    public async Task<ActionResult> Destroy(Guid productId)
+    { 
+        var product = await _productService.Exists(productId);
+
+        if (product is false)
+        {
+            return NotFound($"Product with id={productId} does not exist!");
+        }
+
+        await _productService.Destroy(productId);
+
+        return NoContent();
     }
 }

@@ -1,3 +1,4 @@
+using Elastic.Apm.NetCoreAll;
 using marketplace_api.Data;
 using marketplace_api.Services.CategoryService;
 using marketplace_api.Services.Pagination;
@@ -30,6 +31,8 @@ builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
+
+app.UseAllElasticApm(builder.Configuration);
 
 if (app.Environment.IsDevelopment())
 {

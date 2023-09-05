@@ -32,7 +32,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
-app.UseAllElasticApm(builder.Configuration.GetSection("ElasticApm"));
+app.UseAllElasticApm(builder.Configuration);
 
 if (app.Environment.IsDevelopment())
 {

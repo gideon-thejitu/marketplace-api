@@ -66,6 +66,18 @@ public class ProductService : IProductService
 
         return GetProductDto(product);
     }
+    
+    public async Task<bool> Exists(Guid productId)
+    {
+        return await _dataContext.Products.AnyAsync(product => product.ProductId == productId);
+    }
+    public async Task Destroy(Guid productId)
+    {
+        var product = await _dataContext.Products.Where(product => product.ProductId == productId).FirstOrDefaultAsync();
+        product!.DeletedAt = DateTime.Now;
+        _dataContext.Entry(product).State = EntityState.Modified;
+        await _dataContext.SaveChangesAsync();
+    }
 
     private static ProductDto GetProductDto(Product product)
     {
@@ -78,6 +90,7 @@ public class ProductService : IProductService
             Description = product.Description,
             Price = product.Price,
             DiscountedPrice = product.DiscountedPrice,
+            DeletedAt = product.DeletedAt,
             CategoryId = product.CategoryId,
             ProductStatusId = product.ProductStatusId,
             Category = BuildProductCategoryDto(product?.Category ?? null),
@@ -102,7 +115,7 @@ public class ProductService : IProductService
 
     public async Task<PaginatedResponseDto<ProductDto>> GetAll(ProductFilterDto query)
     {
-        var queryable = ProductQueryableWithDefaultScopes()
+        var queryable = ProductQueryableWithDefaultScopes(true)
             .AsNoTracking();
         var total = await queryable.CountAsync();
         var paginated = await _paginationService
@@ -119,6 +132,7 @@ public class ProductService : IProductService
             Results = paginated
         };
     }
+    
     private static CategoryDto? BuildProductCategoryDto(Category? category)
     {
         if (category == null)
@@ -150,10 +164,11 @@ public class ProductService : IProductService
         };
     }
 
-    private IQueryable<Product> ProductQueryableWithDefaultScopes()
+    private IQueryable<Product> ProductQueryableWithDefaultScopes(bool includeDeleted = false)
     {
         return ProductQueryable()
             .OrderBy(product => product.Id)
+            .Where(product => includeDeleted ? product.DeletedAt == null || product.DeletedAt != null : product.DeletedAt == null)
             .Include(product => product.Category)
             .Include(product => product.ProductStatus);
     }

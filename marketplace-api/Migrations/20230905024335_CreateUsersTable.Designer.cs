@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using marketplace_api.Data;
 
@@ -11,9 +12,11 @@ using marketplace_api.Data;
 namespace marketplace_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230905024335_CreateUsersTable")]
+    partial class CreateUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,44 +120,6 @@ namespace marketplace_api.Migrations
                     b.ToTable("ProductStatuses", (string)null);
                 });
 
-            modelBuilder.Entity("marketplace_api.Models.RefreshToken", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Expiry")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens", (string)null);
-                });
-
             modelBuilder.Entity("marketplace_api.Models.UserIdentity", b =>
                 {
                     b.Property<long>("Id")
@@ -221,15 +186,6 @@ namespace marketplace_api.Migrations
                     b.Navigation("ProductStatus");
                 });
 
-            modelBuilder.Entity("marketplace_api.Models.RefreshToken", b =>
-                {
-                    b.HasOne("marketplace_api.Models.UserIdentity", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("marketplace_api.Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -238,11 +194,6 @@ namespace marketplace_api.Migrations
             modelBuilder.Entity("marketplace_api.Models.ProductStatus", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("marketplace_api.Models.UserIdentity", b =>
-                {
-                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

@@ -71,6 +71,7 @@ public class ProductService : IProductService
     {
         return await _dataContext.Products.AnyAsync(product => product.ProductId == productId);
     }
+
     public async Task Destroy(Guid productId)
     {
         var product = await _dataContext.Products.Where(product => product.ProductId == productId).FirstOrDefaultAsync();
@@ -132,7 +133,7 @@ public class ProductService : IProductService
             Results = paginated
         };
     }
-    
+
     private static CategoryDto? BuildProductCategoryDto(Category? category)
     {
         if (category == null)

@@ -2,6 +2,8 @@ using marketplace_api.Data;
 using marketplace_api.Dto;
 using marketplace_api.Helpers;
 using marketplace_api.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace marketplace_api.Services.RegistrationsService;
 
@@ -37,5 +39,15 @@ public class RegistrationsService :  IRegistrationService
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt,
         };
+    }
+
+    private IQueryable<UserIdentity> UserQueryable()
+    {
+        return _dataContext.UserIdentities;
+    }
+
+    public async Task<bool> EmailTaken(string email)
+    {
+        return await this.UserQueryable().AsNoTracking().AnyAsync(user => user.Email.ToLower() == email.ToLower());
     }
 }

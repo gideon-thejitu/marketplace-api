@@ -4,15 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace marketplace_api.Data.Configurations;
 
-public class UserIdentitiesConfiguration : IEntityTypeConfiguration<UserIdentity>
+public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 {
-    public void Configure(EntityTypeBuilder<UserIdentity> builder)
+    public void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
         builder
-            .ToTable("UserIdentities")
+            .ToTable("RefreshTokens")
             .HasKey(ui => ui.Id);
-        builder.Property(ui => ui.UserIdentityId)
-            .HasDefaultValueSql("NEWID()");
         builder.Property(ui => ui.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .ValueGeneratedOnAdd();
@@ -22,5 +20,8 @@ public class UserIdentitiesConfiguration : IEntityTypeConfiguration<UserIdentity
         builder.Property(ui => ui.UpdatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .ValueGeneratedOnUpdate();
+        builder.HasOne<UserIdentity>(ui => ui.User)
+            .WithMany(refreshToken => refreshToken.RefreshTokens)
+            .HasForeignKey(refreshToken => refreshToken.UserId);
     }
 }

@@ -6,4 +6,9 @@ public class BCryptHelper : IBcryptHelper
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
+
+    public bool Verify(string rawPassword, string hash)
+    {
+        return BCrypt.Net.BCrypt.Verify(rawPassword, hash);
+    }
 }

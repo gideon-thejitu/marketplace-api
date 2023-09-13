@@ -14,4 +14,5 @@ public class UserIdentity
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
+    public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 }

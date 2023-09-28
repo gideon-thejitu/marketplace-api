@@ -3,9 +3,11 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV ASPNETCORE_URLS=http://*:5000
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["marketplace-api/marketplace-api.csproj", "marketplace-api/"]
+COPY ["marketplace-api.csproj", "marketplace-api/"]
 RUN dotnet restore "marketplace-api/marketplace-api.csproj"
 COPY . .
 WORKDIR "/src/marketplace-api"

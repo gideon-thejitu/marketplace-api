@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using Hangfire;
 using marketplace_api.Dto;
 using marketplace_api.Services.CategoryService;
 using Microsoft.AspNetCore.Mvc;

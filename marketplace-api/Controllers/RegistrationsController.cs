@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using marketplace_api.Dto;
+using marketplace_api.Models;
 using marketplace_api.Services.RegistrationsService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,18 @@ public class RegistrationsController :  ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserIdentityDto))]
     public async Task<ActionResult<UserIdentityDto>> Create([FromBody] RegistrationCreateDto data)
     {
+        var isEmailTaken = await _registrationService.EmailTaken(data.Email);
+
+        if (isEmailTaken)
+        {
+            ModelState.AddModelError(nameof(UserIdentity.Email), "Provided email is taken!");
+        }
+
+        if (ModelState.IsValid == false)
+        {
+            return ValidationProblem(ModelState);
+        }
+
         var result = await _registrationService.Create(data);
 
         return Ok(result);

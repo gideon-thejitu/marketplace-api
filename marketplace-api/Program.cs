@@ -85,4 +85,6 @@ app.MapControllers();
 
 app.UseHangfireDashboard();
 
+// RecurringJob.AddOrUpdate("Job", () => new Job().Execute(), Cron.Minutely);
+
 app.Run();

@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
+using marketplace_api.Services;
 
 var developmentOrigins = "_allowedOrigins";
 

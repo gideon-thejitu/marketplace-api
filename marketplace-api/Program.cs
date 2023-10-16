@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+// Hangfire
+using Hangfire;
+using marketplace_api.Services;
+
 var developmentOrigins = "_allowedOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,5 +73,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
+
+// RecurringJob.AddOrUpdate("Job", () => new Job().Execute(), Cron.Minutely);
 
 app.Run();

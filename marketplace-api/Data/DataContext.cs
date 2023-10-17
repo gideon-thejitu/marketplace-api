@@ -14,6 +14,7 @@ public class DataContext : DbContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<UserIdentity> UserIdentities { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,5 +24,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new ProductStatusConfiguration());
         modelBuilder.ApplyConfiguration(new UserIdentityConfiguration());
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
     }
 }

@@ -1,28 +1,42 @@
+// Core
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
-using Elastic.Apm.NetCoreAll;
-using marketplace_api.Data;
+
+// Service
 using marketplace_api.Services.Auth;
 using marketplace_api.Services.CategoryService;
 using marketplace_api.Services.Pagination;
 using marketplace_api.Services.ProductService;
 using marketplace_api.Services.RegistrationsService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using marketplace_api.Services.NotificationService;
+
+// Data
+using marketplace_api.Data;
+
+// APM
+using Elastic.Apm.NetCoreAll;
+
 
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
-using marketplace_api.Services;
 
 var developmentOrigins = "_allowedOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
+var hangfireStorageOptions = new SqlServerStorageOptions()
+{
+    TryAutoDetectSchemaDependentOptions = true,
+    PrepareSchemaIfNecessary = true
+};
+
 builder.Services.AddHangfire(options => options.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), hangfireStorageOptions));
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
@@ -65,6 +79,7 @@ builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 
@@ -85,6 +100,6 @@ app.MapControllers();
 
 app.UseHangfireDashboard();
 
-// RecurringJob.AddOrUpdate("Job", () => new Job().Execute(), Cron.Minutely);
+RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), Cron.Minutely);
 
 app.Run();

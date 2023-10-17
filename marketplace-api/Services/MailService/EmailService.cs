@@ -5,33 +5,27 @@ namespace marketplace_api.Services.MailService;
 
 public class EmailService : IEmailService
 {
-    private readonly MailMessage email;
-    private readonly SmtpClient client;
+    private readonly MailMessage _email;
+    private readonly SmtpClient _client;
 
     public EmailService()
     {
-        email = new MailMessage();
-        client = new SmtpClient("sandbox.smtp.mailtrap.io");
-        email.From = new MailAddress("marketplace.dev@mail.com", "Market Place Dev");
-        client.EnableSsl = true;
-        client.Port = 25;
-        client.Credentials = new NetworkCredential("06e558847d688d", "a2d4998d05b50a");
+        _email = new MailMessage();
+        _client = new SmtpClient("smtp.ethereal.email");
+        _email.From = new MailAddress("marketplace.dev@mail.com", "Market Place Dev");
+        _client.EnableSsl = true;
+        _client.Port = 587;
+        _client.Credentials = new NetworkCredential("noah12@ethereal.email", "ABnj4WzkxaQP9D9a6f");
     }
 
     public void Send(string to)
     {
-        try
-        {
-            email.To.Add(to);
-            email.Subject = "Market Place Dev";
-            email.IsBodyHtml = true;
-            email.Body = $"<h1>Hello {to}</h1>";
-            client.Send(email);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        Console.WriteLine($"Processing {to}");
+        _email.To.Add(to);
+        _email.Body = $"<h1>Hello {to}</h1>";
+        _email.Subject = "Market Place Dev";
+        _email.IsBodyHtml = true;
+        _client.Send(_email);
+        _email.To.Clear();
     }
 }

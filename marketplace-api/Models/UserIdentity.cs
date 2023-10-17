@@ -15,4 +15,5 @@ public class UserIdentity
     public DateTime? UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
     public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
+    public ICollection<Notification> Notifications { get; } = new List<Notification>();
 }

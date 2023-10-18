@@ -29,6 +29,7 @@ public class NotificationService : INotificationService
 
     public async Task SendEmail(Notification notification)
     {
+        // Console.WriteLine(notification.IsSent ? $"Will not send ${notification.UserIdentity.Email}" : $"Will Send {notification.UserIdentity.Email}");
         if (notification.IsSent is false)
         {
             try
@@ -36,14 +37,13 @@ public class NotificationService : INotificationService
                 var to = notification?.UserIdentity?.Email;
         
                 _emailService.Send(to);
-                Console.WriteLine("aaaa");
                 await MarkSentNotification(notification);
             }
             catch (EmailNotSentException e)
             {
-                Console.WriteLine("eee");
+                Console.WriteLine(e);
                 await MarkSentNotification(notification);
-                // throw;
+                throw;
             }
         }
     }

@@ -100,6 +100,6 @@ app.MapControllers();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), Cron.Minutely);
+RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/1 * * * *");
 
 app.Run();

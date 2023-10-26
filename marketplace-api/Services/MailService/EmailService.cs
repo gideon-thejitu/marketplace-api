@@ -12,14 +12,14 @@ public class EmailService : IEmailService
     public EmailService()
     {
         _email = new MailMessage();
-        _client = new SmtpClient("smtp.ethereal.email");
+        _client = new SmtpClient("localhost");
         _email.From = new MailAddress("marketplace.dev@mail.com", "Market Place Dev");
-        _client.EnableSsl = true;
-        _client.Port = 587;
-        _client.Credentials = new NetworkCredential("elwyn81@ethereal.email", "4zqUPzBHknGff2GuAy");
+        _client.EnableSsl = false;
+        _client.Port = 1025;
+        _client.Credentials = new NetworkCredential("", "");
     }
 
-    public void Send(string to)
+    public async Task Send(string to)
     {
         try
         {
@@ -33,7 +33,7 @@ public class EmailService : IEmailService
         }
         catch (Exception e)
         {
-            throw new EmailNotSentException("Email could not be sent", e);
+            throw new EmailNotSentException($"Email '{to}' could not be sent", e);
         }
     }
 }

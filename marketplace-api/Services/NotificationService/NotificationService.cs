@@ -19,31 +19,35 @@ public class NotificationService : INotificationService
 
     public async Task Job()
     {
+        var incompleteNotifications = await _dataContext.Notifications.Include(notification => notification.UserIdentity).Where(n => n.IsSent == false).ToListAsync();
+
+        Console.WriteLine("Executing");
+        Console.WriteLine($"Uncompleted Record {incompleteNotifications.Count}");
+        
         var notifications = await _dataContext.Notifications.Include(notification => notification.UserIdentity).ToListAsync();
 
         foreach (var notification in notifications)
         { 
             await SendEmail(notification);
         }
+        
+        Console.WriteLine("Done");
     }
 
     public async Task SendEmail(Notification notification)
     {
-        // Console.WriteLine(notification.IsSent ? $"Will not send ${notification.UserIdentity.Email}" : $"Will Send {notification.UserIdentity.Email}");
         if (notification.IsSent is false)
         {
+            var to = notification?.UserIdentity?.Email;
+
             try
             {
-                var to = notification?.UserIdentity?.Email;
-        
-                _emailService.Send(to);
+                await _emailService.Send(to);
                 await MarkSentNotification(notification);
             }
             catch (EmailNotSentException e)
             {
-                Console.WriteLine(e);
                 await MarkSentNotification(notification);
-                throw;
             }
         }
     }

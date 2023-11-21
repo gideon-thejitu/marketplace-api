@@ -22,8 +22,8 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<CategoryDto>))]
     public async Task<ActionResult<PaginatedResponseDto<CategoryDto>>> GetAll([FromQuery] CategoryFilterDto query)
     {
+        
         var result = await _categoryService.GetAll(query);
-
         return Ok(result);
     }
 

@@ -22,6 +22,7 @@ using Elastic.Apm.NetCoreAll;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
+using marketplace_api.Services.UsersService;
 
 var developmentOrigins = "_allowedOrigins";
 
@@ -80,6 +81,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -100,6 +102,6 @@ app.MapControllers();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/1 * * * *");
+RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/2 * * * *");
 
 app.Run();

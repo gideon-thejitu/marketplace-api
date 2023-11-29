@@ -115,7 +115,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-app.UseAllElasticApm(builder.Configuration);
+if (app.Environment.IsProduction())
+{
+    app.UseAllElasticApm(builder.Configuration);
+}
 
 if (app.Environment.IsDevelopment())
 {

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using System.Text;
 
 // Service
@@ -22,9 +24,10 @@ using Elastic.Apm.NetCoreAll;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
+
+using marketplace_api.Infrastructure.Authorization;
 using marketplace_api.Extensions;
 using marketplace_api.Services.UserService;
-using Microsoft.OpenApi.Models;
 
 var developmentOrigins = "_allowedOrigins";
 
@@ -103,6 +106,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHangfireServer();
 
 builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+
 
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();

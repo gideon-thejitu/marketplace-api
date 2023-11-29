@@ -1,7 +1,7 @@
 using System.Net.Mime;
 using marketplace_api.Dto;
 using marketplace_api.Models;
-using marketplace_api.Services.RegistrationsService;
+using marketplace_api.Services.RegistrationService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_api.Controllers;

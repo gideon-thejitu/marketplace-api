@@ -1,6 +1,6 @@
 namespace marketplace_api.Exceptions;
 
-public class EmailNotSentException : Exception
+public class EmailNotSentException : MarketplaceException
 {
     public EmailNotSentException() : base()
     {}

@@ -1,6 +1,6 @@
 using marketplace_api.Dto;
 
-namespace marketplace_api.Services.UsersService;
+namespace marketplace_api.Services.UserService;
 
 public interface IUserService
 {

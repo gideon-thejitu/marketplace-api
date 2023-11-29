@@ -1,6 +1,6 @@
 using marketplace_api.Dto;
 
-namespace marketplace_api.Services.RegistrationsService;
+namespace marketplace_api.Services.RegistrationService;
 public interface IRegistrationService
 {
     public Task<UserIdentityDto> Create(RegistrationCreateDto data);

@@ -9,7 +9,7 @@ using marketplace_api.Services.Auth;
 using marketplace_api.Services.CategoryService;
 using marketplace_api.Services.Pagination;
 using marketplace_api.Services.ProductService;
-using marketplace_api.Services.RegistrationsService;
+using marketplace_api.Services.RegistrationService;
 using marketplace_api.Services.NotificationService;
 
 // Data
@@ -22,8 +22,8 @@ using Elastic.Apm.NetCoreAll;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
-using marketplace_api.Middlewares;
-using marketplace_api.Services.UsersService;
+using marketplace_api.Extensions;
+using marketplace_api.Services.UserService;
 using Microsoft.OpenApi.Models;
 
 var developmentOrigins = "_allowedOrigins";
@@ -115,7 +115,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-app.UseAllElasticApm(builder.Configuration);
+if (app.Environment.IsProduction())
+{
+    app.UseAllElasticApm(builder.Configuration);
+}
 
 if (app.Environment.IsDevelopment())
 {

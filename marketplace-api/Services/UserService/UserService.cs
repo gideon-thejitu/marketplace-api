@@ -4,7 +4,7 @@ using marketplace_api.Models;
 using marketplace_api.Services.Pagination;
 using Microsoft.EntityFrameworkCore;
 
-namespace marketplace_api.Services.UsersService;
+namespace marketplace_api.Services.UserService;
 
 public class UserService : IUserService
 {

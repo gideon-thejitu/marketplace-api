@@ -1,3 +1,4 @@
+using System.Data.Entity.Core.Objects;
 using marketplace_api.Data.Configurations;
 using marketplace_api.Models;
 using Microsoft.EntityFrameworkCore;

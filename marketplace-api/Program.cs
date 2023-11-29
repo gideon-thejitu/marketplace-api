@@ -22,7 +22,9 @@ using Elastic.Apm.NetCoreAll;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
+using marketplace_api.Middlewares;
 using marketplace_api.Services.UsersService;
+using Microsoft.OpenApi.Models;
 
 var developmentOrigins = "_allowedOrigins";
 
@@ -39,9 +41,36 @@ builder.Services.AddHangfire(options => options.SetDataCompatibilityLevel(Compat
     .UseRecommendedSerializerSettings()
     .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), hangfireStorageOptions));
 
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        In = ParameterLocation.Header,
+        Description = "Authorization Token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: developmentOrigins, policy =>
@@ -70,6 +99,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddHangfireServer();
 
 builder.Services.AddAuthorization();
@@ -97,6 +127,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.ConfigureExceptionHandler();
 
 app.MapControllers();
 

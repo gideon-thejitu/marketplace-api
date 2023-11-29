@@ -5,7 +5,7 @@ using marketplace_api.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
-namespace marketplace_api.Services.RegistrationsService;
+namespace marketplace_api.Services.RegistrationService;
 
 public class RegistrationsService :  IRegistrationService
 {

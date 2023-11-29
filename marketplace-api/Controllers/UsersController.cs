@@ -1,6 +1,6 @@
 using System.Net.Mime;
 using marketplace_api.Dto;
-using marketplace_api.Services.UsersService;
+using marketplace_api.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -2,7 +2,7 @@ using System.Net.Mime;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace marketplace_api.Middlewares;
+namespace marketplace_api.Extensions;
 
 public static class MarketplaceGlobalExceptionHandlerExtension 
 {
@@ -39,30 +39,4 @@ public static class MarketplaceGlobalExceptionHandlerExtension
             });
         });
     }
-    // private readonly ILogger<MarketplaceGlobalExceptionHandler> _logger;
-    //
-    // public MarketplaceGlobalExceptionHandler(ILogger<MarketplaceGlobalExceptionHandler> logger)
-    // {
-    //     _logger = logger;
-    // }
-    // public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-    // {
-    //     try
-    //     {
-    //         await next(context);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         _logger.LogError(e.Message);
-    //         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-    //         context.Response.ContentType = MediaTypeNames.Application.Json;
-    //         var res = JsonSerializer.Serialize(new
-    //         {
-    //             Error = e.Message
-    //         });
-    //
-    //         await context.Response.WriteAsync(res); 
-    //     }
-    // }
 }

@@ -22,8 +22,10 @@ public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
         {
             context.Fail(new AuthorizationFailureReason(this, "Invalid!"));
         }
+
+        var user = await _userService.GetUserByEmail(sub);
         
-        var user = await _userService.
+        Console.WriteLine(user.Email);
 
         context.Succeed(requirement);
     }

@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Hangfire;
 using marketplace_api.Dto;
+using marketplace_api.Exceptions;
 using marketplace_api.Services.CategoryService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ public class CategoriesController : ControllerBase
     public async Task<ActionResult<PaginatedResponseDto<CategoryDto>>> GetAll([FromQuery] CategoryFilterDto query)
     {
         _logger.LogInformation("Yeeeey");
+        
         var result = await _categoryService.GetAll(query);
         return Ok(result);
     }

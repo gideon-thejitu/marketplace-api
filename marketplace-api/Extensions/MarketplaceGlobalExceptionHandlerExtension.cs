@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using System.Text.Json;
+using marketplace_api.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace marketplace_api.Extensions;
@@ -12,30 +12,15 @@ public static class MarketplaceGlobalExceptionHandlerExtension
         {
             appError.Run(async context =>
             {
-                // logger.LogError("Something is wrong");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = MediaTypeNames.Application.Json;
+                context.Response.ContentType = MediaTypeNames.Text.Plain;
 
                 var errorDetails = context.Features.Get<IExceptionHandlerFeature>();
-                var errorMessage = "";
                 if (errorDetails is not null)
                 {
                     var exception = errorDetails.Error;
-                    errorMessage = exception.Message;
+                    await context.Response.WriteAsync(exception.ToString());
                 }
-                else
-                {
-                    errorMessage = "This is critical";
-                }
-
-                // logger.LogError(errorMessage);
-
-                var res = JsonSerializer.Serialize(new
-                {
-                    Error = errorMessage
-                });
-
-                await context.Response.WriteAsync(res);
             });
         });
     }

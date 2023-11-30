@@ -26,9 +26,17 @@ using marketplace_api.Extensions;
 using marketplace_api.Services.UserService;
 using Microsoft.OpenApi.Models;
 
+// logging
+using Serilog;
+
 var developmentOrigins = "_allowedOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
 
 var hangfireStorageOptions = new SqlServerStorageOptions()
 {
@@ -126,6 +134,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseCors(developmentOrigins);
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

@@ -11,10 +11,12 @@ namespace marketplace_api.Controllers;
 public class CategoriesController : ControllerBase
 {
     public readonly ICategoryService _categoryService;
+    private readonly ILogger<CategoriesController> _logger;
 
-    public CategoriesController(ICategoryService categoryService)
+    public CategoriesController(ICategoryService categoryService, ILogger<CategoriesController> logger)
     {
         _categoryService = categoryService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -22,7 +24,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<CategoryDto>))]
     public async Task<ActionResult<PaginatedResponseDto<CategoryDto>>> GetAll([FromQuery] CategoryFilterDto query)
     {
-        
+        _logger.LogInformation("Yeeeey");
         var result = await _categoryService.GetAll(query);
         return Ok(result);
     }

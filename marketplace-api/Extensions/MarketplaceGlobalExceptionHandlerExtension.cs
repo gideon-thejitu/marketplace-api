@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using marketplace_api.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace marketplace_api.Extensions;

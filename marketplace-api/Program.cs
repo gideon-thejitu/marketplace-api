@@ -23,6 +23,8 @@ using Elastic.Apm.NetCoreAll;
 using Hangfire;
 using Hangfire.SqlServer;
 using marketplace_api.Extensions;
+using marketplace_api.Middlewares;
+using marketplace_api.Services;
 using marketplace_api.Services.UserService;
 using Microsoft.OpenApi.Models;
 
@@ -107,7 +109,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddHangfireServer();
 
 builder.Services.AddAuthorization();
@@ -120,8 +121,11 @@ builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRequestLogService, RequestLogService>();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsProduction())
 {
@@ -133,15 +137,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors(developmentOrigins);
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseSerilogRequestLogging();
 
+app.UseMarketplaceRequestResponseLogger();
+
+app.ConfigureExceptionHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-app.ConfigureExceptionHandler();
 
 app.MapControllers();
 

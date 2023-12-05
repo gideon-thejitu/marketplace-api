@@ -10,6 +10,7 @@ namespace marketplace_api.Controllers;
 [Route("/api/[controller]")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userServiceService;

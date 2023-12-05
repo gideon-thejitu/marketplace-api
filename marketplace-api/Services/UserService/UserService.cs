@@ -32,8 +32,6 @@ public class UserService : IUserService
             UpdatedAt = user.UpdatedAt
         }).ToListAsync();
         
-        throw new ArgumentException("This is intentional");
-
         return new PaginatedResponseDto<UserIdentityDto>()
         {
             Page = query.Page,

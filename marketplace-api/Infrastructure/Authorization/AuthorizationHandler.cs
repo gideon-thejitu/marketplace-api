@@ -6,26 +6,43 @@ namespace marketplace_api.Infrastructure.Authorization;
 
 public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
-    // private readonly IUserService _userService;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public AuthorizationHandler()
+    public AuthorizationHandler(IServiceScopeFactory serviceScopeFactory)
     {
-        // _userService = userService;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
+        PermissionRequirement requirement)
     {
+        using var factory = _serviceScopeFactory.CreateScope();
+        var userService = factory.ServiceProvider.GetService<IUserService>();
+
+        if (userService is null)
+        {
+            context.Fail(new AuthorizationFailureReason(this, "Service not found!"));
+            return;
+        }
+
         var claims = context.User.Claims;
         var sub = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
         if (sub is null)
         {
             context.Fail(new AuthorizationFailureReason(this, "Invalid!"));
+            return;
         }
 
-        // var user = await _userService.GetUserByEmail(sub);
+        var user = await userService.GetUserByEmail(sub);
+
+        if (user is null)
+        {
+            context.Fail(new AuthorizationFailureReason(this, "User not found!"));
+            return;
+        }
         
-        // Console.WriteLine(user.Email);
+        Console.WriteLine(requirement.Permission);
 
         context.Succeed(requirement);
     }

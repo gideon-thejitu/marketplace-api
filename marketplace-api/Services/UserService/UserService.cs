@@ -70,7 +70,6 @@ public class UserService : IUserService
         };
     }
 
-
     private IQueryable<UserIdentity> UserIdentityQueryable()
     {
         return _context.UserIdentities;

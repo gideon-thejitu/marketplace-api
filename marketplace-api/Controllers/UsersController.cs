@@ -2,6 +2,7 @@ using System.Net.Mime;
 using marketplace_api.Dto;
 using marketplace_api.Services.UserService;
 using marketplace_api.Infrastructure.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_api.Controllers;
@@ -10,6 +11,7 @@ namespace marketplace_api.Controllers;
 [Route("/api/[controller]")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userServiceService;

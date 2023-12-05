@@ -6,11 +6,11 @@ namespace marketplace_api.Infrastructure.Authorization;
 
 public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
-    private readonly IUserService _userService;
+    // private readonly IUserService _userService;
 
-    public AuthorizationHandler(IUserService userService)
+    public AuthorizationHandler()
     {
-        _userService = userService;
+        // _userService = userService;
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
@@ -23,9 +23,9 @@ public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
             context.Fail(new AuthorizationFailureReason(this, "Invalid!"));
         }
 
-        var user = await _userService.GetUserByEmail(sub);
+        // var user = await _userService.GetUserByEmail(sub);
         
-        Console.WriteLine(user.Email);
+        // Console.WriteLine(user.Email);
 
         context.Succeed(requirement);
     }

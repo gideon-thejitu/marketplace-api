@@ -27,11 +27,21 @@ using Hangfire.SqlServer;
 
 using marketplace_api.Infrastructure.Authorization;
 using marketplace_api.Extensions;
+using marketplace_api.Middlewares;
+using marketplace_api.Services;
 using marketplace_api.Services.UserService;
+
+// logging
+using Serilog;
 
 var developmentOrigins = "_allowedOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
 
 var hangfireStorageOptions = new SqlServerStorageOptions()
 {
@@ -81,9 +91,12 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
     });
 });
+
 builder.Services.AddRouting(opts => opts.LowercaseUrls = true);
+
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -102,10 +115,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddHangfireServer();
-
 builder.Services.AddAuthorization();
+
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
@@ -118,23 +130,39 @@ builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRequestLogService, RequestLogService>();
 
 var app = builder.Build();
 
-app.UseAllElasticApm(builder.Configuration);
+app.UseForwardedHeaders();
+
+if (app.Environment.IsProduction())
+{
+    app.UseAllElasticApm(builder.Configuration);
+}
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors(developmentOrigins);
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.ConfigureExceptionHandler();
+}
+
+app.UseSerilogRequestLogging();
+
+app.UseMarketplaceRequestResponseLogger();
+
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
-app.ConfigureExceptionHandler();
+app.UseAuthorization();
 
 app.MapControllers();
 

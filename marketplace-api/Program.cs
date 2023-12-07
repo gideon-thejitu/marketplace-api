@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using System.Text;
 
 // Service
@@ -22,11 +24,14 @@ using Elastic.Apm.NetCoreAll;
 // Hangfire
 using Hangfire;
 using Hangfire.SqlServer;
+
+using marketplace_api.Infrastructure.Authorization;
 using marketplace_api.Extensions;
+using marketplace_api.Infrastructure.Cerbos;
+using marketplace_api.Infrastructure.ConfigurationOptions;
 using marketplace_api.Middlewares;
 using marketplace_api.Services;
 using marketplace_api.Services.UserService;
-using Microsoft.OpenApi.Models;
 
 // logging
 using Serilog;
@@ -88,9 +93,12 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
     });
 });
+
 builder.Services.AddRouting(opts => opts.LowercaseUrls = true);
+
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -110,9 +118,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddHangfireServer();
-
 builder.Services.AddAuthorization();
 
+builder.Services.AddSingleton<ICerbosProvider, CerbosProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+
+builder.Services.AddScoped<ICerbosHandler, CerbosHandler>();
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
@@ -122,6 +134,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestLogService, RequestLogService>();
+
+// IOptions
+builder.Services.Configure<CerbosOptions>(
+    builder.Configuration.GetSection(CerbosOptions.Name));
 
 var app = builder.Build();
 
@@ -139,14 +155,19 @@ if (app.Environment.IsDevelopment())
     app.UseCors(developmentOrigins);
     app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.ConfigureExceptionHandler();
+}
 
 app.UseSerilogRequestLogging();
 
-app.UseMarketplaceRequestResponseLogger();
+// app.UseMarketplaceRequestResponseLogger();
 
-app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
+
+// app.UseAuthentication();
 
 app.UseAuthorization();
 

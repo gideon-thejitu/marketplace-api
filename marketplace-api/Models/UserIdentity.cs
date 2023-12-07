@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using marketplace_api.Data.Configurations;
 
 namespace marketplace_api.Models;
 
@@ -16,4 +17,5 @@ public class UserIdentity
     public DateTime? DeletedAt { get; set; }
     public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
     public ICollection<Notification> Notifications { get; } = new List<Notification>();
+    public ICollection<UserIdentityRole> UserIdentityRoles { get; } = new List<UserIdentityRole>();
 }

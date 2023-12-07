@@ -20,7 +20,9 @@ public class UserService : IUserService
     public async Task<PaginatedResponseDto<UserIdentityDto>> GetAllUsers(UserIdentityFilterDto query)
     {
         var usersQueryable = UserIdentityQueryable().AsNoTracking().OrderBy(user => user.Id);
+
         var total = await usersQueryable.CountAsync();
+
         var paginated =  await _paginationService.Paginate(usersQueryable, query).Select(user => new UserIdentityDto()
         {
             Id = user.Id,
@@ -31,8 +33,6 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt
         }).ToListAsync();
-        
-        throw new ArgumentException("This is intentional");
 
         return new PaginatedResponseDto<UserIdentityDto>()
         {
@@ -42,7 +42,49 @@ public class UserService : IUserService
             Results = paginated
         };
     }
-    
+
+    public async Task<UserIdentityDto?> GetUserByEmail(string email)
+    {
+        var user = await UserIdentityQueryable().AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
+
+        if (user is null)
+        {
+            return null;
+        }
+        
+        return ToDto(user);
+    }
+
+    public async Task<ICollection<Role>> GetUserRoles(Guid userIdentityId)
+    {
+        var user = await UserIdentityQueryable().AsNoTracking().Include(user => user.UserIdentityRoles)
+            .ThenInclude(userIdentityRole => userIdentityRole.Role)
+            .Where(user => user.UserIdentityId == userIdentityId).FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return new List<Role>();
+        }
+
+        var roles = user.UserIdentityRoles.Select(userIdentityRole => userIdentityRole.Role).ToList();
+
+        return roles;
+    }
+
+    private UserIdentityDto ToDto(UserIdentity user)
+    {
+        return new UserIdentityDto()
+        {
+            Id = user.Id,
+            UserIdentityId = user.UserIdentityId,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            CreatedAt = user.CreatedAt,
+            UpdatedAt = user.UpdatedAt
+        };
+    }
+
     private IQueryable<UserIdentity> UserIdentityQueryable()
     {
         return _context.UserIdentities;

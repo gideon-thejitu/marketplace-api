@@ -17,6 +17,8 @@ public class DataContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<RequestLog> RequestLogs { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserIdentityRole> UserIdentitiesRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,5 +31,7 @@ public class DataContext : DbContext
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
         modelBuilder.ApplyConfiguration(new RequestLogConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new UserIdentityRoleConfiguration());
     }
 }

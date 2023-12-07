@@ -123,8 +123,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<ICerbosProvider, CerbosProvider>();
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-builder.Services.AddSingleton<IRequestResourceBuilder, RequestResourceBuilder>();
 
+builder.Services.AddScoped<ICerbosHandler, CerbosHandler>();
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductStatusService, ProductStatusService>();
@@ -162,7 +162,7 @@ else
 
 app.UseSerilogRequestLogging();
 
-app.UseMarketplaceRequestResponseLogger();
+// app.UseMarketplaceRequestResponseLogger();
 
 
 app.UseHttpsRedirection();

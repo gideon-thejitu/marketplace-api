@@ -2,12 +2,12 @@ namespace marketplace_api.Exceptions;
 
 public class MarketplaceException : Exception
 {
-    protected MarketplaceException() : base()
+    public MarketplaceException() : base()
     {}
 
-    protected MarketplaceException(string message) : base(message)
+    public MarketplaceException(string message) : base(message)
     {}
 
-    protected MarketplaceException(string message, Exception inner) : base(message, inner)
+    public MarketplaceException(string message, Exception inner) : base(message, inner)
     {}
 }

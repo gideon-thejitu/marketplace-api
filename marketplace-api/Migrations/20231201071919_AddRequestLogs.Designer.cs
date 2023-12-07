@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using marketplace_api.Data;
 
@@ -11,9 +12,11 @@ using marketplace_api.Data;
 namespace marketplace_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231201071919_AddRequestLogs")]
+    partial class AddRequestLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace marketplace_api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("marketplace_api.Data.Configurations.UserIdentityRole", b =>
-                {
-                    b.Property<long>("UserIdentityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserIdentityId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserIdentitiesRoles", (string)null);
-                });
 
             modelBuilder.Entity("marketplace_api.Models.Category", b =>
                 {
@@ -212,27 +200,6 @@ namespace marketplace_api.Migrations
                     b.ToTable("RequestLogs", (string)null);
                 });
 
-            modelBuilder.Entity("marketplace_api.Models.Role", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles", (string)null);
-                });
-
             modelBuilder.Entity("marketplace_api.Models.UserIdentity", b =>
                 {
                     b.Property<long>("Id")
@@ -278,25 +245,6 @@ namespace marketplace_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserIdentities", (string)null);
-                });
-
-            modelBuilder.Entity("marketplace_api.Data.Configurations.UserIdentityRole", b =>
-                {
-                    b.HasOne("marketplace_api.Models.Role", "Role")
-                        .WithMany("UserIdentityRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("marketplace_api.Models.UserIdentity", "UserIdentity")
-                        .WithMany("UserIdentityRoles")
-                        .HasForeignKey("UserIdentityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("UserIdentity");
                 });
 
             modelBuilder.Entity("marketplace_api.Models.Notification", b =>
@@ -348,18 +296,11 @@ namespace marketplace_api.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("marketplace_api.Models.Role", b =>
-                {
-                    b.Navigation("UserIdentityRoles");
-                });
-
             modelBuilder.Entity("marketplace_api.Models.UserIdentity", b =>
                 {
                     b.Navigation("Notifications");
 
                     b.Navigation("RefreshTokens");
-
-                    b.Navigation("UserIdentityRoles");
                 });
 #pragma warning restore 612, 618
         }

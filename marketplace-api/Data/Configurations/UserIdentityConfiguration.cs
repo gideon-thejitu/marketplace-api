@@ -10,17 +10,20 @@ public class UserIdentityConfiguration : IEntityTypeConfiguration<UserIdentity>
     {
         builder
             .ToTable("UserIdentities")
-            .HasKey(ui => ui.Id);
-        builder.Property(ui => ui.UserIdentityId)
+            .HasKey(userIdentity => userIdentity.Id);
+        builder.Property(userIdentity => userIdentity.UserIdentityId)
             .HasDefaultValueSql("NEWID()");
-        builder.Property(ui => ui.CreatedAt)
+        builder.Property(userIdentity => userIdentity.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .ValueGeneratedOnAdd();
-        builder.Property(ui => ui.UpdatedAt)
+        builder.Property(userIdentity => userIdentity.UpdatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .ValueGeneratedOnAdd();
-        builder.Property(ui => ui.UpdatedAt)
+        builder.Property(userIdentity => userIdentity.UpdatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .ValueGeneratedOnUpdate();
+        builder.HasMany<UserIdentityRole>(userIdentity => userIdentity.UserIdentityRoles)
+            .WithOne(userIdentityRole => userIdentityRole.UserIdentity)
+            .HasForeignKey(userIdentityRole => userIdentityRole.UserIdentityId);
     }
 }

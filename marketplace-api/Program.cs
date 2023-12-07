@@ -167,7 +167,7 @@ app.UseMarketplaceRequestResponseLogger();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+// app.UseAuthentication();
 
 app.UseAuthorization();
 

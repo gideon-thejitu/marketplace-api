@@ -50,21 +50,38 @@ public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
             return;
         }
 
+        var userRoles = await userService.GetUserRoles(user.UserIdentityId);
+        var principalRoles = userRoles.Select(role => role.Name).ToArray();
         var requestResource = _requestResourceBuilder.Build(user);
+        string resourceKind = requirement.Permission.Contains(".") ? requirement.Permission.Split(".")[0] : requirement.Permission;
+        List<string> actions = new List<string>();
+
+        string[] rawActions = requirement.Permission.Split(".");
+        for (int i = 0; i < rawActions.Length; i++)
+        {
+            if (i != 0)
+            {
+                actions.Add(rawActions[i]);
+            }
+        }
+        
 
         var request = CheckResourcesRequest.NewInstance().WithRequestId(RequestId.Generate()).WithIncludeMeta(true)
             .WithPrincipal(
-                Principal.NewInstance(requestResource.Id, "user")
+                Principal.NewInstance(requestResource.Id, principalRoles)
                     .WithPolicyVersion(requestResource.PolicyVersion)
             ).WithResourceEntries(
-                ResourceEntry.NewInstance("user", requestResource.Id)
-                    .WithPolicyVersion("default")
-                    .WithActions("read")
+                ResourceEntry.NewInstance(resourceKind, requestResource.Id)
+                    .WithPolicyVersion(requestResource.PolicyVersion)
+                    .WithActions(actions.ToArray())
                 );
+        
 
         var result = client.CheckResources(request).Find(requestResource.Id);
 
-        if (result.IsAllowed("read") is false)
+        bool isAuthorized = actions.All(action => result.IsAllowed(action));
+
+        if (isAuthorized is false)
         {
             context.Fail(new AuthorizationFailureReason(this, "Unauthorized Action!"));
             return;

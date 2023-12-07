@@ -22,7 +22,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet]
-    [HasPermission("users.read")]
+    [HasPermission("user.read")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<UserIdentityDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PaginatedResponseDto<UserIdentityDto>>> AllUsers([FromQuery] UserIdentityFilterDto query)

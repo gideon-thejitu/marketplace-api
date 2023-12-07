@@ -55,6 +55,21 @@ public class UserService : IUserService
         return ToDto(user);
     }
 
+    public async Task<ICollection<Role>> GetUserRoles(Guid userIdentityId)
+    {
+        var user = await UserIdentityQueryable().AsNoTracking().Include(user => user.UserIdentityRoles)
+            .ThenInclude(userIdentityRole => userIdentityRole.Role)
+            .Where(user => user.UserIdentityId == userIdentityId).FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return new List<Role>();
+        }
+
+        var roles = user.UserIdentityRoles.Select(userIdentityRole => userIdentityRole.Role).ToList();
+
+        return roles;
+    }
 
     private UserIdentityDto ToDto(UserIdentity user)
     {

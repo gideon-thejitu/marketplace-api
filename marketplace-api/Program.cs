@@ -27,6 +27,8 @@ using Hangfire.SqlServer;
 
 using marketplace_api.Infrastructure.Authorization;
 using marketplace_api.Extensions;
+using marketplace_api.Infrastructure.Cerbos;
+using marketplace_api.Infrastructure.ConfigurationOptions;
 using marketplace_api.Middlewares;
 using marketplace_api.Services;
 using marketplace_api.Services.UserService;
@@ -118,9 +120,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHangfireServer();
 builder.Services.AddAuthorization();
 
+builder.Services.AddSingleton<ICerbosProvider, CerbosProvider>();
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-
+builder.Services.AddSingleton<IRequestResourceBuilder, RequestResourceBuilder>();
 
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -131,6 +134,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestLogService, RequestLogService>();
+
+// IOptions
+builder.Services.Configure<CerbosOptions>(
+    builder.Configuration.GetSection(CerbosOptions.Name));
 
 var app = builder.Build();
 

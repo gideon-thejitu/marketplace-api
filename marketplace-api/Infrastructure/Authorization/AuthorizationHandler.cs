@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using Cerbos.Sdk.Builder;
+using Cerbos.Sdk.Utility;
+using marketplace_api.Infrastructure.Cerbos;
 using marketplace_api.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 
@@ -7,15 +10,20 @@ namespace marketplace_api.Infrastructure.Authorization;
 public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ICerbosProvider _cerbosProvider;
+    private readonly IRequestResourceBuilder _requestResourceBuilder;
 
-    public AuthorizationHandler(IServiceScopeFactory serviceScopeFactory)
+    public AuthorizationHandler(IServiceScopeFactory serviceScopeFactory, ICerbosProvider cerbosProvider, IRequestResourceBuilder requestResourceBuilder)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _cerbosProvider = cerbosProvider;
+        _requestResourceBuilder = requestResourceBuilder;
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
+        var client = _cerbosProvider.Client();
         using var factory = _serviceScopeFactory.CreateScope();
         var userService = factory.ServiceProvider.GetService<IUserService>();
 
@@ -41,8 +49,26 @@ public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
             context.Fail(new AuthorizationFailureReason(this, "User not found!"));
             return;
         }
-        
-        Console.WriteLine(requirement.Permission);
+
+        var requestResource = _requestResourceBuilder.Build(user);
+
+        var request = CheckResourcesRequest.NewInstance().WithRequestId(RequestId.Generate()).WithIncludeMeta(true)
+            .WithPrincipal(
+                Principal.NewInstance(requestResource.Id, "user")
+                    .WithPolicyVersion(requestResource.PolicyVersion)
+            ).WithResourceEntries(
+                ResourceEntry.NewInstance("user", requestResource.Id)
+                    .WithPolicyVersion("default")
+                    .WithActions("read")
+                );
+
+        var result = client.CheckResources(request).Find(requestResource.Id);
+
+        if (result.IsAllowed("read") is false)
+        {
+            context.Fail(new AuthorizationFailureReason(this, "Unauthorized Action!"));
+            return;
+        }
 
         context.Succeed(requirement);
     }

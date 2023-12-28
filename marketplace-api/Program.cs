@@ -130,6 +130,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IRefreshTokenCleanupService, RefreshTokenCleanupService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestLogService, RequestLogService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -175,5 +176,6 @@ app.MapControllers();
 app.UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/2 * * * *");
+RecurringJob.AddOrUpdate<RefreshTokenCleanupService>(service => service.Execute(), "0/1 * * * *");
 
 app.Run();

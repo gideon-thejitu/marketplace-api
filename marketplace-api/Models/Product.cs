@@ -12,6 +12,9 @@ public class Product
     [NotNull]
     public decimal Price { get; set; }
     public decimal DiscountedPrice { get; set; }
+
+    public long CreatedById { get; set; }
+    public UserIdentity CreatedBy { get; set; } = null!;
     public long ProductStatusId { get; set; }
     public ProductStatus? ProductStatus { get; set; }
     public long CategoryId { get; set; }

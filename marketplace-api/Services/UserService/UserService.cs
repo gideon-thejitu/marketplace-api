@@ -43,7 +43,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<UserIdentityDto?> GetUserByEmail(string email)
+    public async Task<UserIdentityDto?> GetUser(string email)
     {
         var user = await UserIdentityQueryable().AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
 
@@ -55,11 +55,45 @@ public class UserService : IUserService
         return ToDto(user);
     }
 
+    public Task<UserIdentityDto?> GetUser(long id)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ICollection<Role>> GetUserRoles(Guid userIdentityId)
     {
-        var user = await UserIdentityQueryable().AsNoTracking().Include(user => user.UserIdentityRoles)
-            .ThenInclude(userIdentityRole => userIdentityRole.Role)
-            .Where(user => user.UserIdentityId == userIdentityId).FirstOrDefaultAsync();
+        var user = await UserIdentityQueryable().AsNoTracking().Where(user => user.UserIdentityId == userIdentityId)
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return new List<Role>();
+        }
+
+        var roles = user.UserIdentityRoles.Select(userIdentityRole => userIdentityRole.Role).ToList();
+
+        return roles;
+    }
+
+    public async Task<ICollection<Role>> GetUserRoles(long id)
+    {
+        var user = await UserIdentityQueryable().AsNoTracking().Where(user => user.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return new List<Role>();
+        }
+
+        var roles = user.UserIdentityRoles.Select(userIdentityRole => userIdentityRole.Role).ToList();
+
+        return roles;
+    }
+
+    public async Task<ICollection<Role>> GetUserRoles(string email)
+    {
+        var user = await UserIdentityQueryable().AsNoTracking().Where(user => user.Email == email)
+            .FirstOrDefaultAsync();
 
         if (user is null)
         {
@@ -87,6 +121,7 @@ public class UserService : IUserService
 
     private IQueryable<UserIdentity> UserIdentityQueryable()
     {
-        return _context.UserIdentities;
+        return _context.UserIdentities.Include(user => user.UserIdentityRoles)
+            .ThenInclude(userIdentityRole => userIdentityRole.Role);
     }
 }

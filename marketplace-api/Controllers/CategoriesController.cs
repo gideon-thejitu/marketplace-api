@@ -2,7 +2,9 @@ using System.Net.Mime;
 using Hangfire;
 using marketplace_api.Dto;
 using marketplace_api.Exceptions;
+using marketplace_api.Infrastructure.Filters;
 using marketplace_api.Services.CategoryService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_api.Controllers;
@@ -21,6 +23,8 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [IsAuthorizedFor("category", "read")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<CategoryDto>))]
     public async Task<ActionResult<PaginatedResponseDto<CategoryDto>>> GetAll([FromQuery] CategoryFilterDto query)

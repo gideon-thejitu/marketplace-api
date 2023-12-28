@@ -18,4 +18,5 @@ public class UserIdentity
     public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
     public ICollection<Notification> Notifications { get; } = new List<Notification>();
     public ICollection<UserIdentityRole> UserIdentityRoles { get; } = new List<UserIdentityRole>();
+    public ICollection<Product> Products { get; } = new List<Product>();
 }

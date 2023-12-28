@@ -4,7 +4,6 @@ using marketplace_api.Dto;
 using marketplace_api.Infrastructure.Cerbos;
 using marketplace_api.Infrastructure.ConfigurationOptions;
 using marketplace_api.Services.UserService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace marketplace_api.Infrastructure.Authorization;
@@ -22,31 +21,26 @@ public class CerbosHandler : ICerbosHandler
         _options = options.Value;
     }
 
-    public async Task Handle(IAuthorizationHandler handler, AuthorizationHandlerContext context, PermissionRequirement requirement, UserIdentityDto user)
+    public async Task<bool> Handle(string userEmail, string resource, params string[] actions)
     {
         var client = _cerbosProvider.Client();
-        var userRoles = await _userService.GetUserRoles(user.UserIdentityId);
-        var principalRoles = userRoles.Select(role => role.Name).ToArray();
-        var requestResource = Build(user);
-        string resourceKind = requirement.Permission.Contains(".") ? requirement.Permission.Split(".")[0] : requirement.Permission;
-        List<string> actions = new List<string>();
+        var user = await _userService.GetUser(userEmail);
 
-        string[] rawActions = requirement.Permission.Split(".");
-        for (int i = 0; i < rawActions.Length; i++)
+        if (user is null)
         {
-            if (i != 0)
-            {
-                actions.Add(rawActions[i]);
-            }
+            return false;
         }
-        
+
+        var userRoles = await _userService.GetUserRoles(user.Id);
+        var principalRoles = userRoles.Select(role => role.Name).ToArray();
+        var requestResource = RequestPrincipal(user);
 
         var request = CheckResourcesRequest.NewInstance().WithRequestId(RequestId.Generate()).WithIncludeMeta(true)
             .WithPrincipal(
                 Principal.NewInstance(requestResource.Id, principalRoles)
                     .WithPolicyVersion(requestResource.PolicyVersion)
             ).WithResourceEntries(
-                ResourceEntry.NewInstance(resourceKind, requestResource.Id)
+                ResourceEntry.NewInstance(resource, requestResource.Id)
                     .WithPolicyVersion(requestResource.PolicyVersion)
                     .WithActions(actions.ToArray())
             );
@@ -54,18 +48,17 @@ public class CerbosHandler : ICerbosHandler
 
         var result = client.CheckResources(request).Find(requestResource.Id);
 
-        bool isAuthorized = actions.All(action => result.IsAllowed(action));
+        bool isAllowed = actions.All(action => result.IsAllowed(action));
 
-        if (isAuthorized is false)
+        if (isAllowed is false)
         {
-            context.Fail(new AuthorizationFailureReason(handler, "Unauthorized Action!"));
-            return;
+            return false;
         }
 
-        context.Succeed(requirement);
+        return true;
     }
 
-    public IRequestPrincipal Build(UserIdentityDto user)
+    private IRequestPrincipal RequestPrincipal(UserIdentityDto user)
     {
         IRequestPrincipal result = new RequestPrincipal()
         {

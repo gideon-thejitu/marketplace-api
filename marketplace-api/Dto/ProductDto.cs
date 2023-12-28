@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace marketplace_api.Dto;
 
@@ -13,6 +14,8 @@ public class ProductDto
     public decimal Price { get; set; } = Decimal.Zero;
     public decimal DiscountedPrice { get; set; } = Decimal.Zero;
     public DateTime? DeletedAt { get; set; } = null;
+    public long CreatedById { get; set; }
+    public UserIdentityDto? CreatedBy { get; set; }
     public long ProductStatusId { get; set; }
     public ProductStatusDto? ProductStatus { get; set; }
     public long CategoryId { get; set; }
@@ -27,6 +30,9 @@ public class ProductCreateDto
     [Required]
     public string Description { get; set; } = String.Empty;
     [Required]
+    
+    public long CreatedById { get; set; }
+
     public long ProductStatusId { get; set; }
     [Required]
     public long CategoryId { get; set; }

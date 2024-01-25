@@ -18,11 +18,14 @@ public class ProductService : IProductService
     }
     public async Task<ProductDto> Create(ProductCreateDto data)
     {
+        
+        
         var product = new Product()
         {
             Name = data.Name,
             Description = data.Description,
             CategoryId = data.CategoryId,
+            CreatedById = data.CreatedById,
             ProductStatusId = data.ProductStatusId,
             Price = data.Price,
             DiscountedPrice = data.DiscountedPrice
@@ -92,6 +95,8 @@ public class ProductService : IProductService
             Price = product.Price,
             DiscountedPrice = product.DiscountedPrice,
             DeletedAt = product.DeletedAt,
+            CreatedById = product.CreatedById,
+            CreatedBy = BuildProductCreatedByDto(product.CreatedBy ?? null),
             CategoryId = product.CategoryId,
             ProductStatusId = product.ProductStatusId,
             Category = BuildProductCategoryDto(product?.Category ?? null),
@@ -99,11 +104,29 @@ public class ProductService : IProductService
         };
     }
 
+    private static UserIdentityDto BuildProductCreatedByDto(UserIdentity? userIdentity)
+    {
+        if (userIdentity is null)
+        {
+            return new UserIdentityDto();
+        }
+
+        return new UserIdentityDto()
+        {
+            Id = userIdentity.Id,
+            Email = userIdentity.Email,
+            FirstName = userIdentity.FirstName,
+            LastName = userIdentity.LastName,
+            CreatedAt = userIdentity.CreatedAt,
+            UpdatedAt = userIdentity?.UpdatedAt,
+        };
+    }
+    
     private static ProductStatusDto? BuildProductStatusDto(ProductStatus? productStatus)
     {
         if (productStatus is null)
         {
-            return null;
+            return new ProductStatusDto();
         }
 
         return new ProductStatusDto()
@@ -138,7 +161,7 @@ public class ProductService : IProductService
     {
         if (category == null)
         {
-            return null;
+            return new CategoryDto();
         }
 
         return new CategoryDto()

@@ -2,6 +2,7 @@ using System.Net.Mime;
 using marketplace_api.Dto;
 using marketplace_api.Services.UserService;
 using marketplace_api.Infrastructure.Authorization;
+using marketplace_api.Infrastructure.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,8 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet]
-    [HasPermission("user.read")]
+    [Authorize]
+    [IsAuthorizedFor("user", "read")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponseDto<UserIdentityDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PaginatedResponseDto<UserIdentityDto>>> AllUsers([FromQuery] UserIdentityFilterDto query)

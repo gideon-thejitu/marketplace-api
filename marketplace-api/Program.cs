@@ -117,13 +117,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHangfireServer();
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<ICerbosProvider, CerbosProvider>();
-builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-
 builder.Services.AddScoped<ICerbosHandler, CerbosHandler>();
 builder.Services.AddScoped<IPaginationService, PaginationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -132,8 +130,10 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IRefreshTokenCleanupService, RefreshTokenCleanupService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestLogService, RequestLogService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // IOptions
 builder.Services.Configure<CerbosOptions>(
@@ -176,5 +176,6 @@ app.MapControllers();
 app.UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/2 * * * *");
+RecurringJob.AddOrUpdate<RefreshTokenCleanupService>(service => service.Execute(), "0/1 * * * *");
 
 app.Run();

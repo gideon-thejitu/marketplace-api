@@ -1,6 +1,8 @@
 using System.Net.Mime;
 using marketplace_api.Dto;
+using marketplace_api.Infrastructure.Filters;
 using marketplace_api.Services.ProductService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_api.Controllers;
@@ -43,8 +45,11 @@ public class ProductStatusesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [IsAuthorizedFor("product_status", "create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(JsonResult))]
     public async Task<ActionResult<ProductStatusDto>> Create([FromBody] ProductStatusCreateDto data)
     {
         var result = await _productStatusService.Create(data);

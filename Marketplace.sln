@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.API", "Marketplace.API\Marketplace.API.csproj", "{D953CD93-27D6-4749-A6E3-04F81FE858AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Domain", "Marketplace.Domain\Marketplace.Domain.csproj", "{27B9D0FD-93CE-41D7-B83C-0ECAE9D9C01D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Application", "Marketplace.Application\Marketplace.Application.csproj", "{85B1EB61-2B11-4A5E-AACC-5F3C5C497345}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Infrastructure", "Marketplace.Infrastructure\Marketplace.Infrastructure.csproj", "{3EC3ED18-91BC-45DA-B245-42E1F05E9987}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D953CD93-27D6-4749-A6E3-04F81FE858AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D953CD93-27D6-4749-A6E3-04F81FE858AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D953CD93-27D6-4749-A6E3-04F81FE858AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D953CD93-27D6-4749-A6E3-04F81FE858AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27B9D0FD-93CE-41D7-B83C-0ECAE9D9C01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27B9D0FD-93CE-41D7-B83C-0ECAE9D9C01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27B9D0FD-93CE-41D7-B83C-0ECAE9D9C01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27B9D0FD-93CE-41D7-B83C-0ECAE9D9C01D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85B1EB61-2B11-4A5E-AACC-5F3C5C497345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85B1EB61-2B11-4A5E-AACC-5F3C5C497345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85B1EB61-2B11-4A5E-AACC-5F3C5C497345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85B1EB61-2B11-4A5E-AACC-5F3C5C497345}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EC3ED18-91BC-45DA-B245-42E1F05E9987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC3ED18-91BC-45DA-B245-42E1F05E9987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC3ED18-91BC-45DA-B245-42E1F05E9987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC3ED18-91BC-45DA-B245-42E1F05E9987}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

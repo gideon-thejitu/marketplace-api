@@ -5,16 +5,32 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["marketplace-api/marketplace-api.csproj", "marketplace-api/"]
-RUN dotnet restore "marketplace-api/marketplace-api.csproj"
+COPY ["Marketplace.API/Marketplace.API.csproj", "Marketplace.API/"]
+RUN dotnet restore "Marketplace.API/Marketplace.API.csproj"
 COPY . .
-WORKDIR "/src/marketplace-api"
-RUN dotnet build "marketplace-api.csproj" -c Release -o /app/build
+WORKDIR "/src/Marketplace.API"
+#
+#RUN echo $PATH
+#
+#RUN dotnet tool install --version 7.0.15 --global dotnet-ef
+#ENV PATH="$PATH:/root/.dotnet/tools"
+#
+#RUN echo $PATH
+#
+#RUN #dotnet-ef database update -p /src/Marketplace.Infrastructure/Marketplace.Infrastructure.csproj -s /src/Marketplace.API/Marketplace.API.csproj  -- --environment Development
+
+RUN dotnet build "Marketplace.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "marketplace-api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Marketplace.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "marketplace-api.dll"]
+
+COPY "Marketplace.API/entrypoint.sh" .
+COPY "Marketplace.API/wait-for-it.sh" .
+RUN chmod +x entrypoint.sh
+RUN chmod +x wait-for-it.sh
+#ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["dotnet", "Marketplace.API.dll"]

@@ -47,10 +47,15 @@ var hangfireStorageOptions = new SqlServerStorageOptions()
     PrepareSchemaIfNecessary = true
 };
 
-builder.Services.AddHangfire(options => options.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), hangfireStorageOptions));
+var conn = builder.Configuration.GetConnectionString("HangfireConnection");
+Console.WriteLine($"=======================================");
+Console.WriteLine($"Connn = {conn}");
+Console.WriteLine($"=======================================");
+
+// builder.Services.AddHangfire(options => options.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+//     .UseSimpleAssemblyNameTypeSerializer()
+//     .UseRecommendedSerializerSettings()
+//     .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), hangfireStorageOptions));
 
 builder.Services.AddSwaggerGen(opt =>
 {
@@ -97,6 +102,7 @@ builder.Services.AddDbContext<DataContext>(options =>
         sqlServerOptionsAction =>
         {
             sqlServerOptionsAction.MigrationsAssembly("Marketplace.Infrastructure");
+            sqlServerOptionsAction.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null);
         }));
 builder.Services.AddAuthentication(options =>
 {
@@ -117,7 +123,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHangfireServer();
+// builder.Services.AddHangfireServer();
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<ICerbosProvider, CerbosProvider>();
@@ -152,7 +158,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors(developmentOrigins);
-    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -172,9 +177,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.GetPendingMigrations();
+    db.Database.Migrate();
+}
 
-RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/2 * * * *");
-RecurringJob.AddOrUpdate<RefreshTokenCleanupService>(service => service.Execute(), "0/1 * * * *");
+// app.UseHangfireDashboard();
+
+// RecurringJob.AddOrUpdate<NotificationService>(service => service.Job(), "0/2 * * * *");
+// RecurringJob.AddOrUpdate<RefreshTokenCleanupService>(service => service.Execute(), "0/1 * * * *");
 
 app.Run();

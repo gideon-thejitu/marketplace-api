@@ -29,12 +29,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Marketplace.Domain\Marketplace.Domain.csproj" />
       <ProjectReference Include="..\Marketplace.Infrastructure\Marketplace.Infrastructure.csproj" />
     </ItemGroup>

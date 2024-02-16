@@ -9,7 +9,8 @@ services:
       - "5001:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+#      - ASPNETCORE_URLS=https://+:443;http://+:80
+#      - ASPNETCORE_URLS=http://+:80
 #      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
 #      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
@@ -21,12 +22,12 @@ services:
     depends_on: 
       - sqlserver
     restart: always
-#    command: ["./entrypoint.sh"]
   sqlserver:
+    image:  ${DOCKER_REGISTRY-}marketplace.db
     container_name: Marketplace.Database
     build:
-      context: .
-      dockerfile: ./Marketplace.Database/Dockerfile
+      context: Marketplace.Database
+      dockerfile: Dockerfile
     environment:
       - MSSQL_SA_PASSWORD=@SecurePassword!
       - ACCEPT_EULA=Y

@@ -177,11 +177,48 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+//     db.Database.GetPendingMigrations();
+//     db.Database.Migrate();
+// }
+
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-    db.Database.GetPendingMigrations();
-    db.Database.Migrate();
+    var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var db = serviceScope.ServiceProvider.GetRequiredService<DataContext>().Database;
+
+    logger.LogInformation("Migrating database...");
+
+    try
+    {
+        var can = db.CanConnect();
+        logger.LogInformation(can ? "aaaa" : "eeeee");
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e.Message);
+        logger.LogError(e.ToString());
+        throw;
+    }
+
+    while (!db.CanConnect())
+    {
+        logger.LogInformation("Database not ready yet; waiting...");
+        Thread.Sleep(1000);
+        db = serviceScope.ServiceProvider.GetRequiredService<DataContext>().Database;
+    }
+
+    try
+    {
+        serviceScope.ServiceProvider.GetRequiredService<DataContext>().Database.Migrate();
+        logger.LogInformation("Database migrated successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
 }
 
 // app.UseHangfireDashboard();

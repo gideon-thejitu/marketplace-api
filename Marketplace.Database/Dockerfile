@@ -1,17 +1,22 @@
-FROM mcr.microsoft.com/mssql/server:2017-latest
+FROM  mcr.microsoft.com/mssql/server:2022-latest
 
-# Create a config directory
-RUN mkdir -p /usr/config
-WORKDIR /usr/config
+USER root
 
-# Bundle config source
-COPY Marketplace.Database/entrypoint.sh /usr/config/entrypoint.sh
-COPY Marketplace.Database/configure-db.sh /usr/config/configure-db.sh
+ENV SA_PASSWORD @SecurePassword!
+ENV ACCEPT_EULA Y
 
-RUN echo ls
+EXPOSE 1433
 
-# Grant permissions for to our scripts to be executable
-RUN chmod +x /usr/config/entrypoint.sh
-RUN chmod +x /usr/config/configure-db.sh
+# Create app directory
+WORKDIR /usr/src/app
 
-ENTRYPOINT ["/usr/config/entrypoint.sh"]
+# Copy initialization scripts
+COPY entrypoint.sh /usr/src/app/entrypoint.sh
+COPY run-initialization.sh /usr/src/app/run-initialization.sh
+COPY hangfire.sql /usr/src/app/hangfire.sql
+
+RUN ls
+
+USER mssql
+
+CMD /bin/bash ./entrypoint.sh

@@ -28,9 +28,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-COPY "Marketplace.API/entrypoint.sh" .
-COPY "Marketplace.API/wait-for-it.sh" .
-RUN chmod +x entrypoint.sh
-RUN chmod +x wait-for-it.sh
-#ENTRYPOINT ["./entrypoint.sh"]
 ENTRYPOINT ["dotnet", "Marketplace.API.dll"]

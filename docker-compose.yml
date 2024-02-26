@@ -26,22 +26,28 @@ services:
       dockerfile: ./Marketplace.API/Dockerfile
     depends_on: 
       - sqlserver
-    restart: always
+    restart: unless-stopped
   sqlserver:
+    user: root
     image:  ${DOCKER_REGISTRY-}marketplace.db
     container_name: Marketplace.Database
     build:
       context: Marketplace.Database
       dockerfile: Dockerfile
     environment:
-      - MSSQL_SA_PASSWORD=@SecurePassword!
-      - ACCEPT_EULA=Y
+      - MSSQL_PID=Express
     expose:
       - 1433
     ports:
       - "14332:1433"
     volumes:
-      - db_data:/var/opt/mssql
+      - sqlsystem:/var/opt/mssql/
+      - sqldata:/var/opt/sqlserver/data
+      - sqllog:/var/opt/sqlserver/log
+      - sqlbackup:/var/opt/sqlserver/backup
     restart: unless-stopped
-volumes: 
-  db_data:
+volumes:
+  sqlsystem:
+  sqldata:
+  sqllog:
+  sqlbackup:

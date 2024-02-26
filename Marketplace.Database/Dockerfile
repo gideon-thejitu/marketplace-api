@@ -10,12 +10,18 @@ EXPOSE 1433
 # Create app directory
 WORKDIR /usr/src/app
 
+RUN mkdir /var/opt/sqlserver
+RUN mkdir /var/opt/sqlserver/data
+RUN mkdir /var/opt/sqlserver/log
+RUN mkdir /var/opt/sqlserver/backup
+
+RUN chown -R mssql:mssql /var/opt/sqlserver
+RUN chown -R mssql:mssql /var/opt/mssql
+
 # Copy initialization scripts
 COPY entrypoint.sh /usr/src/app/entrypoint.sh
 COPY run-initialization.sh /usr/src/app/run-initialization.sh
 COPY hangfire.sql /usr/src/app/hangfire.sql
-
-RUN ls
 
 USER mssql
 

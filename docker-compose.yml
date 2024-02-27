@@ -1,7 +1,19 @@
 version: '3.4'
 
 services:
+  tyk:
+    image: docker.tyk.io/tyk-gateway/tyk-gateway:latest
+    networks: [ proxy ]
+    build: .
+    ports:
+      - "9000:8080"
+    volumes:
+      - ./tyk/tyk.conf.marketplace:/opt/tyk-gateway/tyk.conf
+      - ./tyk/apps:/opt/tyk-gateway/apps
+      - ./tyk/middleware:/opt/tyk-gateway/middleware
+      - ./tyk/certs:/opt/tyk-gateway/certs
   api:
+    networks: [ proxy ]
     image: ${DOCKER_REGISTRY-}marketplace.api
     container_name: Marketplace.Backend
     ports:
@@ -14,13 +26,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
-# Windows
-#      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-#      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-
-      # Mac    
-      - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${HOME}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ~/.aspnet/https:/https:ro
     build:
       context: .
       dockerfile: ./Marketplace.API/Dockerfile
@@ -29,6 +35,7 @@ services:
     restart: unless-stopped
   sqlserver:
     user: root
+    networks: [ proxy ]
     image:  ${DOCKER_REGISTRY-}marketplace.db
     container_name: Marketplace.Database
     build:
@@ -46,8 +53,17 @@ services:
       - sqllog:/var/opt/sqlserver/log
       - sqlbackup:/var/opt/sqlserver/backup
     restart: unless-stopped
+  redis:
+    image: redis:4.0-alpine
+    networks: [ proxy ]
+    ports:
+      - 6379:6379
+    command: redis-server --appendonly yes
 volumes:
   sqlsystem:
   sqldata:
   sqllog:
   sqlbackup:
+networks:
+  proxy:
+    driver: bridge

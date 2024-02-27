@@ -17,34 +17,20 @@
 mono_crash.*
 
 # Build results
-marketplace-api/[Dd]ebug/
-marketplace-api/[Dd]ebugPublic/
-marketplace-api/[Rr]elease/
-marketplace-api/[Rr]eleases/
-marketplace-api/x64/
-marketplace-api/x86/
-marketplace-api/[Ww][Ii][Nn]32/
-marketplace-api/[Aa][Rr][Mm]/
-marketplace-api/[Aa][Rr][Mm]64/
-marketplace-api/bld/
-marketplace-api/[Bb]in/
-marketplace-api/[Oo]bj/
-marketplace-api/[Ll]og/
-marketplace-api/[Ll]ogs/
-
-tests/[Dd]ebugPublic/
-tests/[Rr]elease/
-tests/[Rr]eleases/
-tests/x64/
-tests/x86/
-tests/[Ww][Ii][Nn]32/
-tests/[Aa][Rr][Mm]/
-tests/[Aa][Rr][Mm]64/
-tests/bld/
-tests/[Bb]in/
-tests/[Oo]bj/
-tests/[Ll]og/
-tests/[Ll]ogs/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -490,4 +476,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+secrets/
 .idea/
+db_data/
+data/

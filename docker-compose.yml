@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}marketplace.api
+    container_name: Marketplace.Backend
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    build:
+      context: .
+      dockerfile: ./Marketplace.API/Dockerfile
+    depends_on: 
+      - sqlserver
+    restart: unless-stopped
+  sqlserver:
+    user: root
+    image:  ${DOCKER_REGISTRY-}marketplace.db
+    container_name: Marketplace.Database
+    build:
+      context: Marketplace.Database
+      dockerfile: Dockerfile
+    environment:
+      - MSSQL_PID=Express
+    expose:
+      - 1433
+    ports:
+      - "14332:1433"
+    volumes:
+      - sqlsystem:/var/opt/mssql/
+      - sqldata:/var/opt/sqlserver/data
+      - sqllog:/var/opt/sqlserver/log
+      - sqlbackup:/var/opt/sqlserver/backup
+    restart: unless-stopped
+volumes:
+  sqlsystem:
+  sqldata:
+  sqllog:
+  sqlbackup:

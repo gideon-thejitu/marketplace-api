@@ -6,8 +6,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Marketplace.API/Marketplace.API.csproj", "Marketplace.API/"]
-RUN dotnet restore "Marketplace.API/Marketplace.API.csproj"
 COPY . .
+RUN dotnet restore "Marketplace.API/Marketplace.API.csproj"
 WORKDIR "/src/Marketplace.API"
 #
 #RUN echo $PATH

@@ -476,7 +476,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-secrets/
 .idea/
+secrets/
 db_data/
 data/
